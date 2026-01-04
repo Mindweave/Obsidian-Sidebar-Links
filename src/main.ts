@@ -63,6 +63,9 @@ class SelectionView extends ItemView {
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
+	getIcon(): string {
+        return "microscope"; // Use a Lucide icon name, e.g., "search", "book", "globe"
+    }
 
 	getViewType(): string {
 		return VIEW_TYPE_SELECTION;
@@ -108,7 +111,7 @@ class SelectionView extends ItemView {
 		this.currentText = text; // store for filtering
 
 		// Update the title showing the search text
-		this.searchTitleEl.setText(`Search Text: ${text}`);
+		this.searchTitleEl.setText(`Search Text: "${text}"`);
 
 		// Initially render all links (no filter)
 		this.renderLinks(text, this.searchInputEl.value);

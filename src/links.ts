@@ -32,5 +32,17 @@ export const linkTemplates: LinkTemplate[] = [
         template: "https://www.wikiwand.com/en/articles/{query}",
         name_and_topics: "Wikiwand, encyclopedia, general knowledge",
         formatter: (text) => text.replace(/ /g, "_")
+    },
+    {
+        name: "DeviantArt",
+        template: "https://www.deviantart.com/search?q={query}",
+        name_and_topics: "DeviantArt, illustrations, drawings, art, creative, community",
+        formatter: (text) => text.replace(/ /g, "+")
+    },
+    {
+        name: "Pixiv",
+        template: "https://www.pixiv.net/tags/{query}/artworks?s_mode=s_tag",
+        name_and_topics: "Pixiv, illustrations, drawings, creative, art, community",
+        formatter: (text) => text.replace(/ /g, "%20")
     }
 ];
