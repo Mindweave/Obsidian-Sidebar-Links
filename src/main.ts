@@ -4,27 +4,21 @@ import {
 	MarkdownView,
 	Plugin,
 	WorkspaceLeaf,
-	ItemView
+	ItemView,
+	Notice
 } from "obsidian";
 
 /** Unique view type ID for the sidebar */
 const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
-/** 
- * Type definition for link templates.
- * Each template can define a name, URL pattern, and optional formatter
- * that adjusts the selected text to fit the URL requirements.
- */
+/** Type definition for link templates */
 type LinkTemplate = {
 	name: string;
 	template: string;
 	formatter?: (text: string) => string;
 };
 
-/** 
- * List of URL templates for generating links.
- * Adding new links is as simple as pushing a new object here.
- */
+/** List of URL templates for generating links */
 const linkTemplates: LinkTemplate[] = [
 	{
 		name: "Wikipedia",
@@ -48,9 +42,7 @@ const linkTemplates: LinkTemplate[] = [
 	}
 ];
 
-/** 
- * Helper function: Generates a list of links from the selected text or file title
- */
+/** Generates links from a search text */
 function generateLinks(text: string) {
 	return linkTemplates.map((tpl) => {
 		const formatted = tpl.formatter ? tpl.formatter(text) : text;
@@ -59,11 +51,10 @@ function generateLinks(text: string) {
 	});
 }
 
-/**
- * Custom sidebar view to display dynamic links.
- */
+/** Sidebar view to display search links */
 class SelectionView extends ItemView {
 	private contentElRef: HTMLElement;
+	private searchTitleEl: HTMLElement;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
@@ -78,42 +69,65 @@ class SelectionView extends ItemView {
 	}
 
 	async onOpen() {
-		// Clear any existing content
+		// Clear any previous content
 		this.contentEl.empty();
+
+		// Title showing what text is being searched
+		this.searchTitleEl = this.contentEl.createEl("div", {
+			cls: "selection-view-title",
+			text: "Search Text: None"
+		});
+
+		// Container for links
 		this.contentElRef = this.contentEl.createEl("div", {
-			cls: "selection-view-content",
-			text: "No file open"
+			cls: "selection-view-content"
 		});
 	}
 
 	/**
-	 * Updates the sidebar content with clickable links
+	 * Updates the sidebar with links for the given text
 	 */
 	setLinks(text: string) {
-		if (!this.contentElRef) return;
+		if (!this.contentElRef || !this.searchTitleEl) return;
 
-		// Clear old content
+		// Update the title at the top
+		this.searchTitleEl.setText(`Search Text: ${text}`);
+
+		// Clear previous links
 		this.contentElRef.empty();
 
-		// Generate links dynamically
 		const links = generateLinks(text);
 
-		// Create clickable links in the sidebar
 		links.forEach((link) => {
-			const a = this.contentElRef.createEl("a", {
+			// Create a container for link + copy button
+			const container = this.contentElRef.createEl("div", { cls: "link-container" });
+
+			// Create clickable link element
+			const a = container.createEl("a", {
 				text: link.name,
 				href: link.url,
-				attr: { target: "_blank", rel: "noopener" }
+				attr: { target: "_blank", rel: "noopener", title: link.url } // show full URL on hover
 			});
-			// Line break after each link
-			this.contentElRef.createEl("br");
+
+			// Create a small copy button next to the link
+			const copyBtn = container.createEl("button", {
+				text: "Copy",
+				cls: "copy-link-btn",
+				attr: { title: "Copy URL to clipboard" }
+			});
+
+			copyBtn.addEventListener("click", (evt) => {
+				evt.stopPropagation(); // prevent bubbling
+				evt.preventDefault();
+				navigator.clipboard.writeText(link.url).then(() => {
+					new Notice(`Copied URL to clipboard:\n${link.url}`);
+				});
+			});
 		});
 	}
 }
 
-/**
- * Main plugin class
- */
+/** Main plugin */
 export default class SelectionSidebarPlugin extends Plugin {
 	private view: SelectionView | null = null;
 
@@ -124,17 +138,17 @@ export default class SelectionSidebarPlugin extends Plugin {
 			(leaf) => (this.view = new SelectionView(leaf))
 		);
 
-		// Activate the view in the right sidebar
+		// Activate the sidebar view
 		this.activateView();
 
-		// Listen for text selection changes in editors
+		// Listen for selection changes
 		this.registerEvent(
 			this.app.workspace.on("editor-selection-change", (editor) => {
 				this.updateFromEditor(editor);
 			})
 		);
 
-		// Listen for active file changes (fallback to file title)
+		// Listen for active file changes
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
 				this.updateFromActiveFile();
@@ -143,13 +157,10 @@ export default class SelectionSidebarPlugin extends Plugin {
 	}
 
 	async onunload() {
-		// Remove the sidebar view on plugin unload
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SELECTION);
 	}
 
-	/**
-	 * Creates or reveals the sidebar view in the right panel
-	 */
+	/** Create or reveal the sidebar */
 	async activateView() {
 		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_SELECTION);
 		if (leaves.length === 0) {
@@ -160,10 +171,7 @@ export default class SelectionSidebarPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Updates sidebar links based on editor selection.
-	 * If selection is empty, falls back to active file title.
-	 */
+	/** Update sidebar based on editor selection */
 	updateFromEditor(editor: Editor) {
 		if (!this.view) return;
 
@@ -176,9 +184,7 @@ export default class SelectionSidebarPlugin extends Plugin {
 		}
 	}
 
-	/**
-	 * Updates sidebar links based on active file title
-	 */
+	/** Update sidebar based on active file title */
 	updateFromActiveFile() {
 		if (!this.view) return;
 

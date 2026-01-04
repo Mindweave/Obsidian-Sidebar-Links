@@ -6,3 +6,48 @@ available in the app when your plugin is enabled.
 If your plugin does not need CSS, delete this file.
 
 */
+/* Sidebar search title */
+.selection-view-title {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+
+/* Each link row */
+.link-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3em;
+}
+
+/* Links */
+.selection-view-content a {
+  text-decoration: none;
+  color: var(--text-accent);
+  font-size: 0.95em;
+}
+
+.selection-view-content a:hover {
+  text-decoration: underline;
+}
+
+/* Copy buttons */
+.copy-link-btn {
+  font-size: 0.75em;
+  padding: 0.2em 0.5em;
+  margin-left: 0.5em;
+  cursor: pointer;
+  background-color: var(--background-modifier-hover);
+  border: none;
+  border-radius: 3px;
+  color: var(--text-accent);
+}
+
+.copy-link-btn:hover {
+  background-color: var(--background-modifier-hover);
+}
+
+/* Sidebar content padding */
+.selection-view-content {
+  padding-left: 0.2em;
+}
