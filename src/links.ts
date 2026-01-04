@@ -1,6 +1,12 @@
+/**
+ * links.ts
+ * Default link templates for the plugin.
+ * Users can see these in settings and remove them if desired.
+ */
+
 import { LinkTemplate } from "./types";
 
-/** Default built-in links */
+/** Default links for common resources */
 export const defaultLinks: LinkTemplate[] = [
     {
         name: "Wikipedia",
