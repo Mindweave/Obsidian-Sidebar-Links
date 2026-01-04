@@ -1,13 +1,13 @@
+/**
+ * settings.ts
+ * Obsidian plugin settings tab.
+ * Users can view, add, or remove links stored in userLinks.
+ */
+
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
 import { SelectionSidebarPlugin } from "./main";
 import { LinkTemplate } from "./types";
-import { defaultLinks } from "./links";
 
-/**
- * Settings tab with duplicate fix.
- * Default links can be removed by marking them as deleted,
- * avoiding duplicates in userLinks.
- */
 export class SelectionSidebarSettingsTab extends PluginSettingTab {
     plugin: SelectionSidebarPlugin;
 
@@ -21,46 +21,25 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         containerEl.empty();
         containerEl.createEl("h2", { text: "Links Configuration" });
 
-        // Helper: user deleted defaults
-        const deletedDefaults = new Set(
-            this.plugin.settings.userLinks
-                .filter(l => (l as any).deleted)
-                .map(l => l.name)
-        );
-
-        // Merge defaults + user links, skipping deleted defaults
-        const allLinks: (LinkTemplate & { isDefault?: boolean })[] = [
-            ...defaultLinks
-                .filter(l => !deletedDefaults.has(l.name))
-                .map(l => ({ ...l, isDefault: true })),
-            ...this.plugin.settings.userLinks.filter(l => !(l as any).deleted)
-        ];
+        // Display all current links
+        const allLinks = this.plugin.settings.userLinks;
 
         allLinks.forEach((link, index) => {
             const setting = new Setting(containerEl)
                 .setName(link.name)
-                .setDesc(link.isDefault ? `${link.template} (default)` : link.template);
+                .setDesc(link.template);
 
-            // Remove button
+            // Remove button for each link
             setting.addButton(btn =>
                 btn.setButtonText("Remove").onClick(async () => {
-                    if (link.isDefault) {
-                        // Only mark as deleted once
-                        if (!this.plugin.settings.userLinks.some(l => (l as any).deleted && l.name === link.name)) {
-                            this.plugin.settings.userLinks.push({ ...link, deleted: true });
-                        }
-                    } else {
-                        // Remove user-added link
-                        const userIndex = this.plugin.settings.userLinks.findIndex(l => l.name === link.name);
-                        if (userIndex >= 0) this.plugin.settings.userLinks.splice(userIndex, 1);
-                    }
+                    this.plugin.settings.userLinks.splice(index, 1);
                     await this.plugin.saveSettings();
-                    this.display(); // refresh UI
+                    this.display();
                 })
             );
         });
 
-        // Section to add new link
+        // Section to add a new link
         containerEl.createEl("h3", { text: "Add New Link" });
         let inputName: HTMLInputElement, inputTemplate: HTMLInputElement, inputTopics: HTMLInputElement;
 
@@ -75,13 +54,16 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                         template: inputTemplate.value.trim(),
                         name_and_topics: inputTopics.value.trim()
                     };
+
                     if (!newLink.name || !newLink.template) {
                         new Notice("Name and template are required!");
                         return;
                     }
+
                     this.plugin.settings.userLinks.push(newLink);
                     await this.plugin.saveSettings();
                     this.display();
+
                     inputName.value = "";
                     inputTemplate.value = "";
                     inputTopics.value = "";
