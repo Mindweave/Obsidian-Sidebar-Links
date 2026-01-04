@@ -1,107 +1,110 @@
 import {
 	App,
-	ItemView,
+	Editor,
+	MarkdownView,
 	Plugin,
-	WorkspaceLeaf
+	WorkspaceLeaf,
+	ItemView
 } from "obsidian";
 
-const VIEW_TYPE_TITLE = "file-title-sidebar";
+/** Unique view type ID */
+const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
-export default class FileTitleSidebarPlugin extends Plugin {
-	async onload() {
-		this.registerView(
-			VIEW_TYPE_TITLE,
-			(leaf) => new FileTitleView(leaf)
-		);
-
-		this.addRibbonIcon("file-text", "Show File Title", () => {
-			this.activateView();
-		});
-	}
-
-	async activateView() {
-		const { workspace } = this.app;
-
-		let leaf: WorkspaceLeaf | null = null;
-
-		workspace.getLeavesOfType(VIEW_TYPE_TITLE).forEach((l) => {
-			leaf = l;
-		});
-
-		if (!leaf) {
-			leaf = workspace.getRightLeaf(false);
-			await leaf.setViewState({
-				type: VIEW_TYPE_TITLE,
-				active: true
-			});
-		}
-
-		workspace.revealLeaf(leaf);
-	}
-}
-
-class FileTitleView extends ItemView {
-	private linkEl!: HTMLAnchorElement;
+/** Sidebar View */
+class SelectionView extends ItemView {
+	private contentElRef: HTMLElement;
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
 	}
 
-	getViewType() {
-		return VIEW_TYPE_TITLE;
+	getViewType(): string {
+		return VIEW_TYPE_SELECTION;
 	}
 
-	getDisplayText() {
-		return "Active File Wikipedia Link";
+	getDisplayText(): string {
+		return "Selection Viewer";
 	}
 
 	async onOpen() {
-		const container = this.containerEl.children[1];
-		container.empty();
-
-
-		this.linkEl = container.createEl("a", {
-			text: "No file open",
-			href: "",
+		this.contentEl.empty();
+		this.contentElRef = this.contentEl.createEl("div", {
+			cls: "selection-view-content",
+			text: "No file open"
 		});
+	}
 
-		this.linkEl.style.fontSize = "1.2em";
-		this.linkEl.style.fontWeight = "600";
-		this.linkEl.setAttr("target", "_blank");
+	setText(text: string) {
+		this.contentElRef.setText(text);
+	}
+}
 
+/** Main Plugin */
+export default class SelectionSidebarPlugin extends Plugin {
+	private view: SelectionView | null = null;
+
+	async onload() {
+		// Register the view
+		this.registerView(
+			VIEW_TYPE_SELECTION,
+			(leaf) => (this.view = new SelectionView(leaf))
+		);
+
+		// Add view to right sidebar
+		this.activateView();
+
+		// Listen for selection changes
 		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
-				this.updateLink();
+			this.app.workspace.on("editor-selection-change", (editor) => {
+				this.updateFromEditor(editor);
 			})
 		);
 
-		this.updateLink();
+		// Listen for file changes
+		this.registerEvent(
+			this.app.workspace.on("active-leaf-change", () => {
+				this.updateFromActiveFile();
+			})
+		);
 	}
 
-	updateLink() {
-		const file = this.app.workspace.getActiveFile();
+	async onunload() {
+		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SELECTION);
+	}
 
-		if (!file) {
-			this.linkEl.setText("No file open");
-			this.linkEl.removeAttribute("href");
-			return;
+	/** Create or reveal the sidebar view */
+	async activateView() {
+		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_SELECTION);
+		if (leaves.length === 0) {
+			await this.app.workspace.getRightLeaf(false).setViewState({
+				type: VIEW_TYPE_SELECTION,
+				active: true
+			});
 		}
-
-		const title = file.basename;
-
-		// Convert spaces to underscores for Wikipedia URLs
-		const wikiTitle = title.replace(/ /g, "_");
-
-		// Encode for safety (handles special characters)
-		const wikiUrl =
-			"https://en.wikipedia.org/wiki/" +
-			encodeURIComponent(wikiTitle);
-
-		this.linkEl.setText(title);
-		this.linkEl.setAttr("href", wikiUrl);
 	}
 
-	async onClose() {
-		// Cleanup handled automatically
+	/** Update sidebar from editor selection */
+	updateFromEditor(editor: Editor) {
+		if (!this.view) return;
+
+		const selection = editor.getSelection().trim();
+
+		if (selection.length > 0) {
+			this.view.setText(selection);
+		} else {
+			this.updateFromActiveFile();
+		}
+	}
+
+	/** Fallback: show active file title */
+	updateFromActiveFile() {
+		if (!this.view) return;
+
+		const file = this.app.workspace.getActiveFile();
+		if (file) {
+			this.view.setText(file.basename);
+		} else {
+			this.view.setText("No file open");
+		}
 	}
 }
