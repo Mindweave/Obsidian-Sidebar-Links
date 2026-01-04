@@ -1,11 +1,3 @@
-/**
- * settings.ts
- * Obsidian plugin settings tab.
- * Users can view, add, or remove links stored in userLinks.
- * Add New Link section now includes helper text, placeholders, and tooltips.
- * TODO: In the future, consider showing full link details (template + topics) per entry.
- */
-
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
 import { SelectionSidebarPlugin } from "./main";
 import { LinkTemplate } from "./types";
@@ -26,7 +18,6 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
 
         const allLinks = this.plugin.settings.userLinks;
 
-        // Display all existing links with remove button
         allLinks.forEach((link, index) => {
             const setting = new Setting(containerEl)
                 .setName(link.name)
@@ -41,42 +32,35 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
             );
         });
 
-        // Section to add a new link
         containerEl.createEl("h3", { text: "Add New Link" });
-        containerEl.createEl("p", {
-            text: "Fill in the fields below to create a new link. Use {query} in the URL template where the selected text should be inserted."
-        });
+        containerEl.createEl("p", { text: "Fill in the fields below to create a new link. Use {query} in the URL template." });
 
-        let inputName: HTMLInputElement, inputTemplate: HTMLInputElement, inputTopics: HTMLInputElement, inputFormatter: HTMLInputElement;
+        let inputName: HTMLInputElement, inputTemplate: HTMLInputElement, inputTopics: HTMLInputElement, inputSpace: HTMLInputElement;
 
         const addSetting = new Setting(containerEl)
-            // Name input
+            // Name
             .addText(text => {
                 inputName = text.inputEl;
                 text.setPlaceholder("Wikipedia");
-                text.setValue("");
-                text.inputEl.title = "This is the display name of the link (e.g., Wikipedia, Stanford Encyclopedia)";
+                text.inputEl.title = "Display name of the link";
             })
-            // Template input
+            // Template
             .addText(text => {
                 inputTemplate = text.inputEl;
                 text.setPlaceholder("https://en.wikipedia.org/wiki/{query}");
-                text.setValue("");
-                text.inputEl.title = "The URL template. Use {query} to insert the selected text dynamically.";
+                text.inputEl.title = "URL template with {query} as placeholder";
             })
-            // Topics input
+            // Topics
             .addText(text => {
                 inputTopics = text.inputEl;
-                text.setPlaceholder("encyclopedia, reference, research");
-                text.setValue("");
-                text.inputEl.title = "Comma-separated topics or keywords used for filtering/searching links.";
+                text.setPlaceholder("encyclopedia, reference");
+                text.inputEl.title = "Comma-separated topics for filtering/searching";
             })
-            // Optional formatter input
+            // Space replacement
             .addText(text => {
-                inputFormatter = text.inputEl;
-                text.setPlaceholder("text => text.replace(/ /g, '_')");
-                text.setValue("");
-                text.inputEl.title = "Optional JavaScript function to format the {query} text (e.g., replace spaces with underscores).";
+                inputSpace = text.inputEl;
+                text.setPlaceholder("_");
+                text.inputEl.title = "What character(s) to replace spaces with (default _)";
             })
             // Add button
             .addButton(btn =>
@@ -85,7 +69,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                         name: inputName.value.trim(),
                         template: inputTemplate.value.trim(),
                         name_and_topics: inputTopics.value.trim(),
-                        formatter: inputFormatter.value ? inputFormatter.value.trim() : undefined
+                        spaceReplacement: inputSpace.value.trim() || "_"
                     };
 
                     if (!newLink.name || !newLink.template) {
@@ -97,14 +81,13 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                     this.display();
 
-                    // Reset inputs
                     inputName.value = "";
                     inputTemplate.value = "";
                     inputTopics.value = "";
-                    inputFormatter.value = "";
+                    inputSpace.value = "";
                 })
             );
 
-        addSetting.setName("New Link").setDesc("Fill Name, Template ({query}), Topics, Formatter (optional JS function)");
+        addSetting.setName("New Link").setDesc("Fill Name, Template ({query}), Topics, Space Replacement");
     }
 }
