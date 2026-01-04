@@ -1,8 +1,8 @@
 /**
  * main.ts
  * Main plugin logic for the selection sidebar
- * Shows links for selected text or active file title
- * Includes search, copy buttons, and populates default links on first load
+ * Prepopulates default links with formatter
+ * Allows selection-based link generation with formatting
  */
 
 import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView } from "obsidian";
@@ -46,9 +46,13 @@ export default class SelectionSidebarPlugin extends Plugin {
     async onload() {
         await this.loadSettings();
 
-        // Prepopulate defaults on first activation
+        // Prepopulate defaults on first activation, keeping formatter
         if (!this.settings.userLinks || this.settings.userLinks.length === 0) {
-            this.settings.userLinks = DEFAULT_LINKS;
+            // Save formatter as string for JSON
+            this.settings.userLinks = DEFAULT_LINKS.map(link => ({
+                ...link,
+                formatter: link.formatter ? link.formatter.toString() : undefined
+            }));
             await this.saveSettings();
         }
 
@@ -147,7 +151,7 @@ class SelectionView extends ItemView {
     private renderLinks(text: string, filter: string) {
         this.contentElRef.empty();
 
-        const allLinks: LinkTemplate[] = this.plugin.settings.userLinks;
+        const allLinks = this.plugin.settings.userLinks;
 
         // Filter links by name_and_topics using simple fuzzy search
         let filtered = allLinks.filter(link =>
@@ -163,7 +167,18 @@ class SelectionView extends ItemView {
         filtered.forEach(link => {
             const container = this.contentElRef.createEl("div", { cls: "link-container" });
 
-            const url = link.formatter ? link.template.replace("{query}", link.formatter(text)) : link.template.replace("{query}", text);
+            // Convert formatter string back to function, if present
+            let formatterFn: ((text: string) => string) | undefined;
+            if (link.formatter && typeof link.formatter === "string") {
+                try {
+                    formatterFn = new Function("text", `return (${link.formatter})(text);`) as (text: string) => string;
+                } catch (e) {
+                    console.error("Invalid formatter function:", e);
+                    formatterFn = undefined;
+                }
+            }
+
+            const url = formatterFn ? link.template.replace("{query}", formatterFn(text)) : link.template.replace("{query}", text);
 
             const a = container.createEl("a", {
                 text: link.name,
