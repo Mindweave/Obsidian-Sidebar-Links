@@ -13,9 +13,9 @@ const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
 /** Type definition for link templates */
 type LinkTemplate = {
-	name: string;
-	template: string;
-	formatter?: (text: string) => string;
+	name: string;                  // Display name of the site
+	template: string;              // URL template with {query} placeholder
+	formatter?: (text: string) => string; // Optional formatter for site-specific URL rules
 };
 
 /** List of URL templates for generating links */
@@ -42,7 +42,9 @@ const linkTemplates: LinkTemplate[] = [
 	}
 ];
 
-/** Generates links from a search text */
+/**
+ * Generates link objects from a search text.
+ */
 function generateLinks(text: string) {
 	return linkTemplates.map((tpl) => {
 		const formatted = tpl.formatter ? tpl.formatter(text) : text;
@@ -51,10 +53,28 @@ function generateLinks(text: string) {
 	});
 }
 
-/** Sidebar view to display search links */
+/**
+ * Simple fuzzy match function for filtering link names.
+ * Returns true if all characters in `query` appear in order in `text`.
+ */
+function fuzzyMatch(query: string, text: string): boolean {
+	query = query.toLowerCase();
+	text = text.toLowerCase();
+	let qi = 0;
+	for (let i = 0; i < text.length && qi < query.length; i++) {
+		if (query[qi] === text[i]) qi++;
+	}
+	return qi === query.length;
+}
+
+/**
+ * Custom sidebar view displaying links based on selection or file title.
+ */
 class SelectionView extends ItemView {
-	private contentElRef: HTMLElement;
-	private searchTitleEl: HTMLElement;
+	private contentElRef: HTMLElement;   // Container for links
+	private searchTitleEl: HTMLElement;  // Displays "Search Text: ..."
+	private currentText: string = "";    // Current selection/file text
+	private searchInputEl: HTMLInputElement; // Search input for filtering
 
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
@@ -69,55 +89,81 @@ class SelectionView extends ItemView {
 	}
 
 	async onOpen() {
-		// Clear any previous content
+		// Clear previous content
 		this.contentEl.empty();
 
-		// Title showing what text is being searched
+		// Title: shows what text is being used for link generation
 		this.searchTitleEl = this.contentEl.createEl("div", {
 			cls: "selection-view-title",
 			text: "Search Text: None"
+		});
+
+		// Search input for filtering links
+		this.searchInputEl = this.contentEl.createEl("input", {
+			attr: { placeholder: "Filter links..." },
+			cls: "link-search-input"
 		});
 
 		// Container for links
 		this.contentElRef = this.contentEl.createEl("div", {
 			cls: "selection-view-content"
 		});
+
+		// Listen to input changes and re-render links dynamically
+		this.searchInputEl.addEventListener("input", () => {
+			this.renderLinks(this.currentText, this.searchInputEl.value);
+		});
 	}
 
 	/**
-	 * Updates the sidebar with links for the given text
+	 * Update sidebar links based on the selected text or file title
 	 */
 	setLinks(text: string) {
 		if (!this.contentElRef || !this.searchTitleEl) return;
 
-		// Update the title at the top
+		this.currentText = text; // store for filtering
+
+		// Update the title showing the search text
 		this.searchTitleEl.setText(`Search Text: ${text}`);
 
-		// Clear previous links
+		// Initially render all links (no filter)
+		this.renderLinks(text, this.searchInputEl.value);
+	}
+
+	/**
+	 * Render links into the sidebar, optionally filtering via a search string
+	 */
+	renderLinks(text: string, filter: string) {
+		if (!this.contentElRef) return;
+
+		// Clear existing links
 		this.contentElRef.empty();
 
 		const links = generateLinks(text);
 
 		links.forEach((link) => {
-			// Create a container for link + copy button
+			// Apply fuzzy filter if a search term exists
+			if (filter && !fuzzyMatch(filter, link.name)) return;
+
+			// Container for each link + copy button
 			const container = this.contentElRef.createEl("div", { cls: "link-container" });
 
-			// Create clickable link element
+			// Clickable link
 			const a = container.createEl("a", {
 				text: link.name,
 				href: link.url,
-				attr: { target: "_blank", rel: "noopener", title: link.url } // show full URL on hover
+				attr: { target: "_blank", rel: "noopener", title: link.url }
 			});
 
-			// Create a small copy button next to the link
+			// Copy button (small icon)
 			const copyBtn = container.createEl("button", {
-				text: "Copy",
+				text: "📋", // clipboard icon
 				cls: "copy-link-btn",
 				attr: { title: "Copy URL to clipboard" }
 			});
 
 			copyBtn.addEventListener("click", (evt) => {
-				evt.stopPropagation(); // prevent bubbling
+				evt.stopPropagation(); // prevent event bubbling
 				evt.preventDefault();
 				navigator.clipboard.writeText(link.url).then(() => {
 					new Notice(`Copied URL to clipboard:\n${link.url}`);
@@ -127,7 +173,9 @@ class SelectionView extends ItemView {
 	}
 }
 
-/** Main plugin */
+/**
+ * Main plugin class
+ */
 export default class SelectionSidebarPlugin extends Plugin {
 	private view: SelectionView | null = null;
 
@@ -138,17 +186,17 @@ export default class SelectionSidebarPlugin extends Plugin {
 			(leaf) => (this.view = new SelectionView(leaf))
 		);
 
-		// Activate the sidebar view
+		// Activate sidebar in the right panel
 		this.activateView();
 
-		// Listen for selection changes
+		// Listen for selection changes in any editor
 		this.registerEvent(
 			this.app.workspace.on("editor-selection-change", (editor) => {
 				this.updateFromEditor(editor);
 			})
 		);
 
-		// Listen for active file changes
+		// Listen for active file changes to fallback to file title
 		this.registerEvent(
 			this.app.workspace.on("active-leaf-change", () => {
 				this.updateFromActiveFile();
@@ -157,10 +205,13 @@ export default class SelectionSidebarPlugin extends Plugin {
 	}
 
 	async onunload() {
+		// Detach sidebar on plugin unload
 		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SELECTION);
 	}
 
-	/** Create or reveal the sidebar */
+	/**
+	 * Create or reveal the sidebar view in the right panel
+	 */
 	async activateView() {
 		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_SELECTION);
 		if (leaves.length === 0) {
@@ -171,7 +222,9 @@ export default class SelectionSidebarPlugin extends Plugin {
 		}
 	}
 
-	/** Update sidebar based on editor selection */
+	/**
+	 * Update sidebar links based on editor selection
+	 */
 	updateFromEditor(editor: Editor) {
 		if (!this.view) return;
 
@@ -184,7 +237,9 @@ export default class SelectionSidebarPlugin extends Plugin {
 		}
 	}
 
-	/** Update sidebar based on active file title */
+	/**
+	 * Update sidebar links based on active file title (fallback)
+	 */
 	updateFromActiveFile() {
 		if (!this.view) return;
 
