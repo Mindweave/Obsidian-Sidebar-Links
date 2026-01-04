@@ -15,6 +15,7 @@ const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 type LinkTemplate = {
 	name: string;                  // Display name of the site
 	template: string;              // URL template with {query} placeholder
+	name_and_topics: string;       // Comma-separated list of name and topics for searching
 	formatter?: (text: string) => string; // Optional formatter for site-specific URL rules
 };
 
@@ -23,21 +24,25 @@ const linkTemplates: LinkTemplate[] = [
 	{
 		name: "Wikipedia",
 		template: "https://en.wikipedia.org/wiki/{query}",
+		name_and_topics: "Wikipedia, encyclopedia, general knowledge, reference",
 		formatter: (text) => text.replace(/ /g, "_")
 	},
 	{
 		name: "Stanford Encyclopedia",
 		template: "https://plato.stanford.edu/entries/{query}/",
+		name_and_topics: "Stanford Encyclopedia, philosophy, reference, academia",
 		formatter: (text) => text.toLowerCase().replace(/ /g, "-")
 	},
 	{
 		name: "Academia Lab",
 		template: "https://academia-lab.com/encyclopedia/{query}/",
+		name_and_topics: "Academia Lab, research, reference, encyclopedia",
 		formatter: (text) => text.toLowerCase().replace(/ /g, "-")
 	},
 	{
 		name: "Wikiwand",
 		template: "https://www.wikiwand.com/en/articles/{query}",
+		name_and_topics: "Wikiwand, encyclopedia, general knowledge",
 		formatter: (text) => text.replace(/ /g, "_")
 	}
 ];
@@ -49,12 +54,12 @@ function generateLinks(text: string) {
 	return linkTemplates.map((tpl) => {
 		const formatted = tpl.formatter ? tpl.formatter(text) : text;
 		const url = tpl.template.replace("{query}", formatted);
-		return { name: tpl.name, url };
+		return { name: tpl.name, url, name_and_topics: tpl.name_and_topics };
 	});
 }
 
 /**
- * Simple fuzzy match function for filtering link names.
+ * Simple fuzzy match function.
  * Returns true if all characters in `query` appear in order in `text`.
  */
 function fuzzyMatch(query: string, text: string): boolean {
@@ -65,6 +70,17 @@ function fuzzyMatch(query: string, text: string): boolean {
 		if (query[qi] === text[i]) qi++;
 	}
 	return qi === query.length;
+}
+
+/**
+ * Calculates match "score" for sorting.
+ * Lower index of match in text = higher priority.
+ */
+function matchScore(query: string, text: string): number {
+	query = query.toLowerCase();
+	text = text.toLowerCase();
+	const index = text.indexOf(query);
+	return index >= 0 ? index : Number.MAX_SAFE_INTEGER;
 }
 
 /**
@@ -132,6 +148,7 @@ class SelectionView extends ItemView {
 
 	/**
 	 * Render links into the sidebar, optionally filtering via a search string
+	 * Fuzzy search and sort by how early the match occurs in name_and_topics
 	 */
 	renderLinks(text: string, filter: string) {
 		if (!this.contentElRef) return;
@@ -141,10 +158,20 @@ class SelectionView extends ItemView {
 
 		const links = generateLinks(text);
 
-		links.forEach((link) => {
-			// Apply fuzzy filter if a search term exists
-			if (filter && !fuzzyMatch(filter, link.name)) return;
+		// Filter and sort links
+		let filteredLinks = links.filter((link) =>
+			filter ? fuzzyMatch(filter, link.name_and_topics) : true
+		);
 
+		if (filter) {
+			// Sort by earliest occurrence of the filter in name_and_topics
+			filteredLinks.sort(
+				(a, b) => matchScore(filter, a.name_and_topics) - matchScore(filter, b.name_and_topics)
+			);
+		}
+
+		// Render each filtered link
+		filteredLinks.forEach((link) => {
 			// Container for each link + copy button
 			const container = this.contentElRef.createEl("div", { cls: "link-container" });
 
@@ -157,7 +184,7 @@ class SelectionView extends ItemView {
 
 			// Copy button (small icon)
 			const copyBtn = container.createEl("button", {
-				text: "📋", // clipboard icon
+				text: "📋",
 				cls: "copy-link-btn",
 				attr: { title: "Copy URL to clipboard" }
 			});
