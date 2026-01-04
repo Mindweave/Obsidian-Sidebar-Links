@@ -1,14 +1,7 @@
-// links.ts
-/** Type definition for link templates */
-export type LinkTemplate = {
-    name: string;                  // Display name of the site
-    template: string;              // URL template with {query} placeholder
-    name_and_topics: string;       // Comma-separated list of name and topics for searching
-    formatter?: (text: string) => string; // Optional formatter for site-specific URL rules
-};
+import { LinkTemplate } from "./types";
 
-/** Array of link templates for generating URLs */
-export const linkTemplates: LinkTemplate[] = [
+/** Default built-in links */
+export const defaultLinks: LinkTemplate[] = [
     {
         name: "Wikipedia",
         template: "https://en.wikipedia.org/wiki/{query}",
@@ -36,12 +29,12 @@ export const linkTemplates: LinkTemplate[] = [
     {
         name: "DeviantArt",
         template: "https://www.deviantart.com/search?q={query}",
-        name_and_topics: "DeviantArt, illustrations, drawings, art, creative, community",
+        name_and_topics: "DeviantArta, illustrations, drawings, art, creative, community",
         formatter: (text) => text.replace(/ /g, "+")
     },
     {
         name: "Pixiv",
-        template: "https://www.pixiv.net/tags/{query}/artworks?s_mode=s_tag",
+        template: "https://www.pixiv.net/tags/{query}/artworks?s_mode=s_tag_{query}",
         name_and_topics: "Pixiv, illustrations, drawings, creative, art, community",
         formatter: (text) => text.replace(/ /g, "%20")
     }

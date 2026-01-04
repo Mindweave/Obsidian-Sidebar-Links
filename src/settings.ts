@@ -1,36 +1,64 @@
-import {App, PluginSettingTab, Setting} from "obsidian";
-import MyPlugin from "./main";
+import { App, PluginSettingTab, Setting } from "obsidian";
+import { SelectionSidebarPlugin } from "./main";
+import { LinkTemplate } from "./types";
 
-export interface MyPluginSettings {
-	mySetting: string;
-}
+export class SelectionSidebarSettingsTab extends PluginSettingTab {
+    plugin: SelectionSidebarPlugin;
 
-export const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
+    constructor(app: App, plugin: SelectionSidebarPlugin) {
+        super(app, plugin);
+        this.plugin = plugin;
+    }
 
-export class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+    display(): void {
+        const { containerEl } = this;
+        containerEl.empty();
+        containerEl.createEl("h2", { text: "User-Defined Links" });
 
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
+        // Display existing user links
+        this.plugin.settings.userLinks.forEach((link, index) => {
+            const setting = new Setting(containerEl)
+                .setName(link.name)
+                .setDesc(link.template);
 
-	display(): void {
-		const {containerEl} = this;
+            // Remove button
+            setting.addButton(btn =>
+                btn.setButtonText("Remove").onClick(async () => {
+                    this.plugin.settings.userLinks.splice(index, 1);
+                    await this.plugin.saveSettings();
+                    this.display(); // refresh UI
+                })
+            );
+        });
 
-		containerEl.empty();
+        // Add new link section
+        containerEl.createEl("h3", { text: "Add New Link" });
+        let inputName: HTMLInputElement, inputTemplate: HTMLInputElement, inputTopics: HTMLInputElement;
 
-		new Setting(containerEl)
-			.setName('Settings #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
+        const addSetting = new Setting(containerEl)
+            .addText((text) => inputName = text.inputEl)
+            .addText((text) => inputTemplate = text.inputEl)
+            .addText((text) => inputTopics = text.inputEl)
+            .addButton(btn =>
+                btn.setButtonText("Add").onClick(async () => {
+                    const newLink: LinkTemplate = {
+                        name: inputName.value.trim(),
+                        template: inputTemplate.value.trim(),
+                        name_and_topics: inputTopics.value.trim()
+                    };
+                    if (!newLink.name || !newLink.template) {
+                        new Notice("Name and template are required!");
+                        return;
+                    }
+                    this.plugin.settings.userLinks.push(newLink);
+                    await this.plugin.saveSettings();
+                    this.display();
+                    inputName.value = "";
+                    inputTemplate.value = "";
+                    inputTopics.value = "";
+                })
+            );
+
+        addSetting.setName("New Link").setDesc("Fill Name, Template ({query}), Topics");
+    }
 }

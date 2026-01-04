@@ -1,251 +1,137 @@
 import {
-	App,
-	Editor,
-	MarkdownView,
-	Plugin,
-	WorkspaceLeaf,
-	ItemView,
-	Notice
+    App, Plugin, WorkspaceLeaf, ItemView, Editor, Notice
 } from "obsidian";
+import { defaultLinks } from "./links";
+import { LinkTemplate, SelectionSidebarSettings } from "./types";
+import { SelectionSidebarSettingsTab } from "./settings";
 
-/*  Definition of link templates moved to a separate file for clarity*/
-import { linkTemplates, LinkTemplate } from "./links";
-
-
-/** Unique view type ID for the sidebar */
+/** Sidebar view ID */
 const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
-/**
- * Generates link objects from a search text.
- */
-function generateLinks(text: string) {
-	return linkTemplates.map((tpl) => {
-		const formatted = tpl.formatter ? tpl.formatter(text) : text;
-		const url = tpl.template.replace("{query}", formatted);
-		return { name: tpl.name, url, name_and_topics: tpl.name_and_topics };
-	});
-}
+export default class SelectionSidebarPlugin extends Plugin {
+    view: SelectionView | null = null;
+    settings: SelectionSidebarSettings;
 
-/**
- * Simple fuzzy match function.
- * Returns true if all characters in `query` appear in order in `text`.
- */
-function fuzzyMatch(query: string, text: string): boolean {
-	query = query.toLowerCase();
-	text = text.toLowerCase();
-	let qi = 0;
-	for (let i = 0; i < text.length && qi < query.length; i++) {
-		if (query[qi] === text[i]) qi++;
-	}
-	return qi === query.length;
-}
+    async onload() {
+        await this.loadSettings();
 
-/**
- * Calculates match "score" for sorting.
- * Lower index of match in text = higher priority.
- */
-function matchScore(query: string, text: string): number {
-	query = query.toLowerCase();
-	text = text.toLowerCase();
-	const index = text.indexOf(query);
-	return index >= 0 ? index : Number.MAX_SAFE_INTEGER;
-}
+        // Register settings tab
+        this.addSettingTab(new SelectionSidebarSettingsTab(this.app, this));
 
-/**
- * Custom sidebar view displaying links based on selection or file title.
- */
-class SelectionView extends ItemView {
-	private contentElRef: HTMLElement;   // Container for links
-	private searchTitleEl: HTMLElement;  // Displays "Search Text: ..."
-	private currentText: string = "";    // Current selection/file text
-	private searchInputEl: HTMLInputElement; // Search input for filtering
+        // Register sidebar view
+        this.registerView(VIEW_TYPE_SELECTION, leaf => this.view = new SelectionView(leaf, this));
 
-	constructor(leaf: WorkspaceLeaf) {
-		super(leaf);
-	}
-	getIcon(): string {
-        return "microscope"; // Use a Lucide icon name, e.g., "search", "book", "globe"
+        // Activate sidebar
+        this.activateView();
+
+        // Update on editor selection changes
+        this.registerEvent(this.app.workspace.on("editor-selection-change", (editor) => {
+            this.updateFromEditor(editor);
+        }));
+
+        // Update on active file changes
+        this.registerEvent(this.app.workspace.on("active-leaf-change", () => {
+            this.updateFromActiveFile();
+        }));
     }
 
-	getViewType(): string {
-		return VIEW_TYPE_SELECTION;
-	}
+    async onunload() {
+        this.app.workspace.detachLeavesOfType(VIEW_TYPE_SELECTION);
+    }
 
-	getDisplayText(): string {
-		return "Selection Links";
-	}
+    async loadSettings() {
+        const defaultSettings: SelectionSidebarSettings = { userLinks: [] };
+        this.settings = Object.assign({}, defaultSettings, await this.loadData());
+    }
 
-	async onOpen() {
-		// Clear previous content
-		this.contentEl.empty();
+    async saveSettings() {
+        await this.saveData(this.settings);
+    }
 
-		// Title: shows what text is being used for link generation
-		this.searchTitleEl = this.contentEl.createEl("div", {
-			cls: "selection-view-title",
-			text: "Search Text: None"
-		});
+    async activateView() {
+        const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_SELECTION);
+        if (leaves.length === 0) {
+            await this.app.workspace.getRightLeaf(false).setViewState({ type: VIEW_TYPE_SELECTION, active: true });
+        }
+    }
 
-		// Search input for filtering links
-		this.searchInputEl = this.contentEl.createEl("input", {
-			attr: { placeholder: "Filter links..." },
-			cls: "link-search-input"
-		});
+    updateFromEditor(editor: Editor) {
+        if (!this.view) return;
+        const selection = editor.getSelection().trim();
+        this.view.setLinks(selection || this.getActiveFileName());
+    }
 
-		// Container for links
-		this.contentElRef = this.contentEl.createEl("div", {
-			cls: "selection-view-content"
-		});
+    updateFromActiveFile() {
+        if (!this.view) return;
+        this.view.setLinks(this.getActiveFileName());
+    }
 
-		// Listen to input changes and re-render links dynamically
-		this.searchInputEl.addEventListener("input", () => {
-			this.renderLinks(this.currentText, this.searchInputEl.value);
-		});
-	}
-
-	/**
-	 * Update sidebar links based on the selected text or file title
-	 */
-	setLinks(text: string) {
-		if (!this.contentElRef || !this.searchTitleEl) return;
-
-		this.currentText = text; // store for filtering
-
-		// Update the title showing the search text
-		this.searchTitleEl.setText(`Search Text: "${text}"`);
-
-		// Initially render all links (no filter)
-		this.renderLinks(text, this.searchInputEl.value);
-	}
-
-	/**
-	 * Render links into the sidebar, optionally filtering via a search string
-	 * Fuzzy search and sort by how early the match occurs in name_and_topics
-	 */
-	renderLinks(text: string, filter: string) {
-		if (!this.contentElRef) return;
-
-		// Clear existing links
-		this.contentElRef.empty();
-
-		const links = generateLinks(text);
-
-		// Filter and sort links
-		let filteredLinks = links.filter((link) =>
-			filter ? fuzzyMatch(filter, link.name_and_topics) : true
-		);
-
-		if (filter) {
-			// Sort by earliest occurrence of the filter in name_and_topics
-			filteredLinks.sort(
-				(a, b) => matchScore(filter, a.name_and_topics) - matchScore(filter, b.name_and_topics)
-			);
-		}
-
-		// Render each filtered link
-		filteredLinks.forEach((link) => {
-			// Container for each link + copy button
-			const container = this.contentElRef.createEl("div", { cls: "link-container" });
-
-			// Clickable link
-			const a = container.createEl("a", {
-				text: link.name,
-				href: link.url,
-				attr: { target: "_blank", rel: "noopener", title: link.url }
-			});
-
-			// Copy button (small icon)
-			const copyBtn = container.createEl("button", {
-				text: "📋",
-				cls: "copy-link-btn",
-				attr: { title: "Copy URL to clipboard" }
-			});
-
-			copyBtn.addEventListener("click", (evt) => {
-				evt.stopPropagation(); // prevent event bubbling
-				evt.preventDefault();
-				navigator.clipboard.writeText(link.url).then(() => {
-					new Notice(`Copied URL to clipboard:\n${link.url}`);
-				});
-			});
-		});
-	}
+    private getActiveFileName(): string {
+        const file = this.app.workspace.getActiveFile();
+        return file ? file.basename : "No file open";
+    }
 }
 
-/**
- * Main plugin class
- */
-export default class SelectionSidebarPlugin extends Plugin {
-	private view: SelectionView | null = null;
+/** Sidebar view class */
+class SelectionView extends ItemView {
+    private plugin: SelectionSidebarPlugin;
+    private contentElRef: HTMLElement;
+    private searchTitleEl: HTMLElement;
+    private searchInputEl: HTMLInputElement;
+    private currentText: string = "";
 
-	async onload() {
-		// Register the sidebar view
-		this.registerView(
-			VIEW_TYPE_SELECTION,
-			(leaf) => (this.view = new SelectionView(leaf))
-		);
+    constructor(leaf: WorkspaceLeaf, plugin: SelectionSidebarPlugin) {
+        super(leaf);
+        this.plugin = plugin;
+    }
 
-		// Activate sidebar in the right panel
-		this.activateView();
+    getViewType(): string { return VIEW_TYPE_SELECTION; }
+    getDisplayText(): string { return "Selection Links"; }
+    getIcon(): string { return "book"; } // Lucide icon
 
-		// Listen for selection changes in any editor
-		this.registerEvent(
-			this.app.workspace.on("editor-selection-change", (editor) => {
-				this.updateFromEditor(editor);
-			})
-		);
+    async onOpen() {
+        this.contentEl.empty();
+        this.searchTitleEl = this.contentEl.createEl("div", { cls: "selection-view-title", text: "Search Text: None" });
+        this.searchInputEl = this.contentEl.createEl("input", { attr: { placeholder: "Filter links..." }, cls: "link-search-input" });
+        this.contentElRef = this.contentEl.createEl("div", { cls: "selection-view-content" });
 
-		// Listen for active file changes to fallback to file title
-		this.registerEvent(
-			this.app.workspace.on("active-leaf-change", () => {
-				this.updateFromActiveFile();
-			})
-		);
-	}
+        this.searchInputEl.addEventListener("input", () => {
+            this.renderLinks(this.currentText, this.searchInputEl.value);
+        });
+    }
 
-	async onunload() {
-		// Detach sidebar on plugin unload
-		this.app.workspace.detachLeavesOfType(VIEW_TYPE_SELECTION);
-	}
+    setLinks(text: string) {
+        this.currentText = text;
+        this.searchTitleEl.setText(`Search Text: ${text}`);
+        this.renderLinks(text, this.searchInputEl.value);
+    }
 
-	/**
-	 * Create or reveal the sidebar view in the right panel
-	 */
-	async activateView() {
-		const leaves = this.app.workspace.getLeavesOfType(VIEW_TYPE_SELECTION);
-		if (leaves.length === 0) {
-			await this.app.workspace.getRightLeaf(false).setViewState({
-				type: VIEW_TYPE_SELECTION,
-				active: true
-			});
-		}
-	}
+    private renderLinks(text: string, filter: string) {
+        this.contentElRef.empty();
+        const allLinks: LinkTemplate[] = [...defaultLinks, ...this.plugin.settings.userLinks];
 
-	/**
-	 * Update sidebar links based on editor selection
-	 */
-	updateFromEditor(editor: Editor) {
-		if (!this.view) return;
+        let filtered = allLinks.filter(link =>
+            !filter || link.name_and_topics.toLowerCase().includes(filter.toLowerCase())
+        );
 
-		const selection = editor.getSelection().trim();
+        // Sort by earliest match index
+        filtered.sort((a, b) =>
+            a.name_and_topics.toLowerCase().indexOf(filter.toLowerCase()) -
+            b.name_and_topics.toLowerCase().indexOf(filter.toLowerCase())
+        );
 
-		if (selection.length > 0) {
-			this.view.setLinks(selection);
-		} else {
-			this.updateFromActiveFile();
-		}
-	}
+        filtered.forEach(link => {
+            const container = this.contentElRef.createEl("div", { cls: "link-container" });
+            const a = container.createEl("a", { text: link.name, href: link.template.replace("{query}", text), attr: { target: "_blank", rel: "noopener", title: link.template.replace("{query}", text) } });
 
-	/**
-	 * Update sidebar links based on active file title (fallback)
-	 */
-	updateFromActiveFile() {
-		if (!this.view) return;
-
-		const file = this.app.workspace.getActiveFile();
-		if (file) {
-			this.view.setLinks(file.basename);
-		} else {
-			this.view.setLinks("No file open");
-		}
-	}
+            const copyBtn = container.createEl("button", { text: "📋", cls: "copy-link-btn", attr: { title: "Copy URL" } });
+            copyBtn.addEventListener("click", evt => {
+                evt.preventDefault();
+                evt.stopPropagation();
+                navigator.clipboard.writeText(link.template.replace("{query}", text)).then(() => {
+                    new Notice(`Copied URL to clipboard:\n${link.template.replace("{query}", text)}`);
+                });
+            });
+        });
+    }
 }
