@@ -1,62 +1,63 @@
 /**
  * main.ts
- * Main plugin logic for the selection sidebar
- * Prepopulates default links with formatter
- * Allows selection-based link generation with formatting
+ * Selection Links Sidebar Plugin for Obsidian
+ *
+ * Features:
+ * - Shows links based on selected text or active file title.
+ * - Supports multiple link templates with dynamic space replacement.
+ * - Search/filter links by name_and_topics.
+ * - Copy links to clipboard via button.
+ * - Prepopulates default links on first activation.
  */
 
 import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView } from "obsidian";
 import { SelectionSidebarSettings, LinkTemplate } from "./types";
 import { SelectionSidebarSettingsTab } from "./settings";
 
-const VIEW_TYPE_SELECTION = "selection-sidebar-view";
+export const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
-/** Default links preloaded on first activation */
+/** Default links for first activation */
 const DEFAULT_LINKS: LinkTemplate[] = [
     {
         name: "Wikipedia",
         template: "https://en.wikipedia.org/wiki/{query}",
-        name_and_topics: "Wikipedia, encyclopedia, general knowledge, reference",
-        formatter: (text) => text.replace(/ /g, "_")
+        name_and_topics: "Wikipedia, encyclopedia, reference",
+        spaceReplacement: "_"
     },
     {
         name: "Stanford Encyclopedia",
         template: "https://plato.stanford.edu/entries/{query}/",
-        name_and_topics: "Stanford Encyclopedia, philosophy, reference, academia",
-        formatter: (text) => text.toLowerCase().replace(/ /g, "-")
+        name_and_topics: "Stanford Encyclopedia, philosophy, reference",
+        spaceReplacement: "-"
     },
     {
         name: "Academia Lab",
         template: "https://academia-lab.com/encyclopedia/{query}/",
-        name_and_topics: "Academia Lab, research, reference, encyclopedia",
-        formatter: (text) => text.toLowerCase().replace(/ /g, "-")
+        name_and_topics: "Academia Lab, research, reference",
+        spaceReplacement: "-"
     },
     {
         name: "Wikiwand",
         template: "https://www.wikiwand.com/en/articles/{query}",
         name_and_topics: "Wikiwand, encyclopedia, general knowledge",
-        formatter: (text) => text.replace(/ /g, "_")
+        spaceReplacement: "_"
     }
 ];
 
 export default class SelectionSidebarPlugin extends Plugin {
-    view: SelectionView | null = null;
     settings: SelectionSidebarSettings;
+    view: SelectionView | null = null;
 
     async onload() {
         await this.loadSettings();
 
-        // Prepopulate defaults on first activation, keeping formatter
+        // Prepopulate defaults on first activation
         if (!this.settings.userLinks || this.settings.userLinks.length === 0) {
-            // Save formatter as string for JSON
-            this.settings.userLinks = DEFAULT_LINKS.map(link => ({
-                ...link,
-                formatter: link.formatter ? link.formatter.toString() : undefined
-            }));
+            this.settings.userLinks = DEFAULT_LINKS;
             await this.saveSettings();
         }
 
-        // Register settings tab
+        // Add settings tab
         this.addSettingTab(new SelectionSidebarSettingsTab(this.app, this));
 
         // Register sidebar view
@@ -113,10 +114,9 @@ export default class SelectionSidebarPlugin extends Plugin {
     }
 }
 
-/** Sidebar view class */
+/** Sidebar view displaying links */
 class SelectionView extends ItemView {
     private plugin: SelectionSidebarPlugin;
-    private contentElRef: HTMLElement;
     private searchTitleEl: HTMLElement;
     private searchInputEl: HTMLInputElement;
     private currentText: string = "";
@@ -133,28 +133,37 @@ class SelectionView extends ItemView {
     async onOpen() {
         this.contentEl.empty();
 
+        // Title showing the text being searched
         this.searchTitleEl = this.contentEl.createEl("div", { cls: "selection-view-title", text: "Search Text: None" });
-        this.searchInputEl = this.contentEl.createEl("input", { attr: { placeholder: "Filter links..." }, cls: "link-search-input" });
-        this.contentElRef = this.contentEl.createEl("div", { cls: "selection-view-content" });
 
+        // Input for filtering links
+        this.searchInputEl = this.contentEl.createEl("input", { cls: "link-search-input", attr: { placeholder: "Filter links..." } });
+
+        // Container for links
+        this.contentEl.createDiv({ cls: "selection-view-content" });
+
+        // Filter input event
         this.searchInputEl.addEventListener("input", () => {
             this.renderLinks(this.currentText, this.searchInputEl.value);
         });
     }
 
+    /** Update links based on selected text or file title */
     setLinks(text: string) {
         this.currentText = text;
-        this.searchTitleEl.setText(`Search Text: ${text}`);
+        if (this.searchTitleEl) this.searchTitleEl.setText(`Search Text: ${text}`);
         this.renderLinks(text, this.searchInputEl.value);
     }
 
+    /** Render filtered links in sidebar */
     private renderLinks(text: string, filter: string) {
-        this.contentElRef.empty();
+        const container = this.contentEl.querySelector(".selection-view-content")!;
+        container.empty();
 
         const allLinks = this.plugin.settings.userLinks;
 
-        // Filter links by name_and_topics using simple fuzzy search
-        let filtered = allLinks.filter(link =>
+        // Filter links using name_and_topics
+        const filtered = allLinks.filter(link =>
             !filter || link.name_and_topics.toLowerCase().includes(filter.toLowerCase())
         );
 
@@ -165,33 +174,23 @@ class SelectionView extends ItemView {
         );
 
         filtered.forEach(link => {
-            const container = this.contentElRef.createEl("div", { cls: "link-container" });
+            const linkContainer = container.createDiv({ cls: "link-container" });
 
-            // Convert formatter string back to function, if present
-            let formatterFn: ((text: string) => string) | undefined;
-            if (link.formatter && typeof link.formatter === "string") {
-                try {
-                    formatterFn = new Function("text", `return (${link.formatter})(text);`) as (text: string) => string;
-                } catch (e) {
-                    console.error("Invalid formatter function:", e);
-                    formatterFn = undefined;
-                }
-            }
+            const queryText = link.spaceReplacement ? text.replace(/ /g, link.spaceReplacement) : text;
+            const url = link.template.replace("{query}", queryText);
 
-            const url = formatterFn ? link.template.replace("{query}", formatterFn(text)) : link.template.replace("{query}", text);
-
-            const a = container.createEl("a", {
+            const a = linkContainer.createEl("a", {
                 text: link.name,
                 href: url,
-                attr: { target: "_blank", rel: "noopener", title: url }
+                attr: { target: "_blank", title: url }
             });
 
-            const copyBtn = container.createEl("button", { text: "📋", cls: "copy-link-btn", attr: { title: "Copy URL" } });
+            const copyBtn = linkContainer.createEl("button", { text: "📋", cls: "copy-link-btn", attr: { title: "Copy URL" } });
             copyBtn.addEventListener("click", evt => {
                 evt.preventDefault();
                 evt.stopPropagation();
                 navigator.clipboard.writeText(url).then(() => {
-                    new Notice(`Copied URL to clipboard:\n${url}`);
+                    new Notice(`Copied URL: ${url}`);
                 });
             });
         });
