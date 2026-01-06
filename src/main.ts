@@ -13,36 +13,11 @@
 import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView } from "obsidian";
 import { SelectionSidebarSettings, LinkTemplate } from "./types";
 import { SelectionSidebarSettingsTab } from "./settings";
+import { DEFAULT_LINKS } from "./default-links";
 
 export const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
-/** Default links for first activation */
-const DEFAULT_LINKS: LinkTemplate[] = [
-    {
-        name: "Wikipedia",
-        template: "https://en.wikipedia.org/wiki/{query}",
-        name_and_topics: "Wikipedia: encyclopedia, reference",
-        spaceReplacement: "_"
-    },
-    {
-        name: "Stanford Encyclopedia",
-        template: "https://plato.stanford.edu/entries/{query}/",
-        name_and_topics: "Stanford Encyclopedia: philosophy, reference",
-        spaceReplacement: "-"
-    },
-    {
-        name: "Academia Lab",
-        template: "https://academia-lab.com/encyclopedia/{query}/",
-        name_and_topics: "Academia Lab: research, reference",
-        spaceReplacement: "-"
-    },
-    {
-        name: "Wikiwand",
-        template: "https://www.wikiwand.com/en/articles/{query}",
-        name_and_topics: "Wikiwand: encyclopedia, general knowledge",
-        spaceReplacement: "_"
-    }
-];
+/** Default links for first activation. From default-links.ts */
 
 export default class SelectionSidebarPlugin extends Plugin {
     settings: SelectionSidebarSettings;
@@ -128,7 +103,7 @@ class SelectionView extends ItemView {
 
     getViewType(): string { return VIEW_TYPE_SELECTION; }
     getDisplayText(): string { return "Selection Links"; }
-    getIcon(): string { return "book"; }
+    getIcon(): string { return "microsope"; }
 
     async onOpen() {
         this.contentEl.empty();

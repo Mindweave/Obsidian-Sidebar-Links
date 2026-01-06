@@ -10,7 +10,13 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         this.plugin = plugin;
     }
 
-    display(): void {
+    display(defaultSettingText: LinkTemplate = {
+                        name: "",
+                        topics: "",
+                        template: "",
+                        name_and_topics: "",
+                        spaceReplacement: ""
+                    }): void {
         const { containerEl } = this;
         containerEl.empty();
 
@@ -24,10 +30,18 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                 .setDesc(link.template);
             //TODO add edit functionality later. This should be a button that removes the link and passes the link properties to the edit form
             setting.addButton(btn =>
-                btn.setButtonText("Remove").onClick(async () => {
+                btn.setButtonText("Remove & Edit").onClick(async () => {
+                    //Remove link
                     this.plugin.settings.userLinks.splice(index, 1);
                     await this.plugin.saveSettings();
-                    this.display();
+                    //Add to edit area
+                    defaultSettingText.name = link.name;
+                    defaultSettingText.topics = link.topics;
+                    defaultSettingText.template = link.template;
+                    defaultSettingText.name_and_topics = link.name_and_topics;
+                    defaultSettingText.spaceReplacement = link.spaceReplacement;
+                    //Refresh display
+                    this.display(defaultSettingText);
                 })
             );
         });
@@ -40,24 +54,28 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         const addSettingDispayName = new Setting(containerEl).addTextArea(text => {
                 inputName = text.inputEl;
                 text.setPlaceholder("Wikipedia");
+                text.setValue(defaultSettingText.name);
                 text.inputEl.title = "Display name of the link";
             }).setName("Name").setDesc("Display name of the link");
-            // Template
-            const addSettingTemplate = new Setting(containerEl).addTextArea(text => {
-                inputTemplate = text.inputEl;
-                text.setPlaceholder("https://en.wikipedia.org/wiki/{query}");
-                text.inputEl.title = "URL template with {query} as placeholder";
-            }).setName("Template").setDesc("URL template with {query} as placeholder");
             // Topics
             const addSettingTopics = new Setting(containerEl).addTextArea(text => {
                 inputTopics = text.inputEl;
                 text.setPlaceholder("encyclopedia, reference");
+                text.setValue(defaultSettingText.topics);
                 text.inputEl.title = "Comma-separated topics for filtering/searching";
             }).setName("Topics").setDesc("Comma-separated topics for filtering/searching");
+            // Template
+            const addSettingTemplate = new Setting(containerEl).addTextArea(text => {
+                inputTemplate = text.inputEl;
+                text.setPlaceholder("https://en.wikipedia.org/wiki/{query}");
+                text.setValue(defaultSettingText.template);
+                text.inputEl.title = "URL template with {query} as placeholder";
+            }).setName("Template").setDesc("URL template with {query} as placeholder");
             // Space replacement
             const addSettingSpaceReplacement = new Setting(containerEl).addTextArea(text => {
                 inputSpace = text.inputEl;
                 text.setPlaceholder("_");
+                text.setValue(defaultSettingText.spaceReplacement);
                 text.inputEl.title = "What character(s) to replace spaces with e.g. _ or -";
             }).setName("Space Replacement").setDesc("What character(s) to replace spaces with e.g. _ or -");
             // Add button
@@ -65,13 +83,14 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                 btn.setButtonText("Add").onClick(async () => {
                     const newLink: LinkTemplate = {
                         name: inputName.value.trim(),
+                        topics: inputTopics.value.trim(),
                         template: inputTemplate.value.trim(),
                         name_and_topics: inputName.value.trim() + ": " + inputTopics.value.trim(),
                         spaceReplacement: inputSpace.value.trim() || "_"
                     };
 
-                    if (!newLink.name || !newLink.template) {
-                        new Notice("Name and template are required!");
+                    if (!newLink.name || !newLink.topics || !newLink.template || !newLink.spaceReplacement) {
+                        new Notice("Name, topics, template, and space replacement are all required!");
                         return;
                     }
 
@@ -79,13 +98,11 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                     await this.plugin.saveSettings();
                     this.display();
 
-                    inputName.value = "";
-                    inputTemplate.value = "";
+                    inputName.value = "";                    
                     inputTopics.value = "";
+                    inputTemplate.value = "";
                     inputSpace.value = "";
                 })
             );
-
-        addSetting.setName("New Link").setDesc("Fill Name, Template ({query}), Topics, Space Replacement");
     }
 }
