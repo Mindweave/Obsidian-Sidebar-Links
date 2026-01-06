@@ -1,9 +1,9 @@
 {
-	"id": "hello-world-plugin",
-	"name": "Hello World Plugin",
+	"id": "obsidian-sidebar-links",
+	"name": "Sidebar Links",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
+	"description": "An Obsidian plugin to convert the title of the active note or highlighted text into URLs for research online ",
 	"author": "Obsidian",
 	"authorUrl": "https://obsidian.md",
 	"fundingUrl": "https://obsidian.md/pricing",
