@@ -20,32 +20,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        containerEl.createEl("h2", { text: "Links Configuration" });
-
-        const allLinks = this.plugin.settings.userLinks;
-
-        allLinks.forEach((link, index) => {
-            const setting = new Setting(containerEl)
-                .setName(link.name_and_topics || link.name)
-                .setDesc(link.template);
-            //TODO add edit functionality later. This should be a button that removes the link and passes the link properties to the edit form
-            setting.addButton(btn =>
-                btn.setButtonText("Remove & Edit").onClick(async () => {
-                    //Remove link
-                    this.plugin.settings.userLinks.splice(index, 1);
-                    await this.plugin.saveSettings();
-                    //Add to edit area
-                    defaultSettingText.name = link.name;
-                    defaultSettingText.topics = link.topics;
-                    defaultSettingText.template = link.template;
-                    defaultSettingText.name_and_topics = link.name_and_topics;
-                    defaultSettingText.spaceReplacement = link.spaceReplacement;
-                    //Refresh display
-                    this.display(defaultSettingText);
-                })
-            );
-        });
-
+        
         containerEl.createEl("h3", { text: "Add New Link" });
         containerEl.createEl("p", { text: "Fill in the fields below to create a new link. Use {query} in the URL template." });
         
@@ -104,5 +79,34 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                     inputSpace.value = "";
                 })
             );
+
+        containerEl.createEl("h2", { text: "Current Links" });
+        const allLinks = this.plugin.settings.userLinks;
+        if (allLinks.length === 0) {
+            containerEl.createEl("p", { text: "No links added yet." });
+            return;
+        } else {
+        allLinks.forEach((link, index) => {
+            const setting = new Setting(containerEl)
+                .setName(link.name_and_topics || link.name)
+                .setDesc(link.template);
+            //TODO add edit functionality later. This should be a button that removes the link and passes the link properties to the edit form
+            setting.addButton(btn =>
+                btn.setButtonText("Remove & Edit").onClick(async () => {
+                    //Remove link
+                    this.plugin.settings.userLinks.splice(index, 1);
+                    await this.plugin.saveSettings();
+                    //Add to edit area
+                    defaultSettingText.name = link.name;
+                    defaultSettingText.topics = link.topics;
+                    defaultSettingText.template = link.template;
+                    defaultSettingText.name_and_topics = link.name_and_topics;
+                    defaultSettingText.spaceReplacement = link.spaceReplacement;
+                    //Refresh display
+                    this.display(defaultSettingText);
+                })
+            );
+        });
+    }
     }
 }
