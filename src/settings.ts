@@ -119,7 +119,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
             setting.addButton(btn =>
                 btn.setButtonText("Remove & Edit").onClick(async () => {
                     //Remove link
-                    this.plugin.settings.userLinks.splice(index, 1);
+                    this.plugin.settings.userLinks = this.plugin.settings.userLinks.filter(item => item !== link);
                     await this.plugin.saveSettings();
                     //Add to edit area
                     defaultSettingText.name = link.name;

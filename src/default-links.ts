@@ -17,20 +17,6 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         spaceReplacement: "-"
     },
     {
-        name: "Academia Lab",
-        topics: "research, reference",
-        template: "https://academia-lab.com/encyclopedia/{query}/",
-        name_and_topics: "Academia Lab: research, reference",
-        spaceReplacement: "-"
-    },
-    {
-        name: "Wikiwand",
-        topics: "encyclopedia, general knowledge",
-        template: "https://www.wikiwand.com/en/articles/{query}",
-        name_and_topics: "Wikiwand: encyclopedia, general knowledge",
-        spaceReplacement: "_"
-    },
-    {
         name: "Internet Archive",
         topics: "books, archives, general knowledge",
         template: "https://archive.org/search?query={query}&tab=fulltext",
@@ -232,5 +218,82 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         template: "https://papers.ssrn.com/searchresults.cfm?term={query}",
         name_and_topics: "SSRN: academic papers, research, journals, social sciences, humanities",
         spaceReplacement: "+"
-     }
+     },
+     {
+        name: "HAL",
+        topics: "academic papers, research, journals, multi-disciplinary",
+        template: "https://hal.science/search/index?q={query}",
+        name_and_topics: "HAL: academic papers, research, journals, multi-disciplinary",
+        spaceReplacement: "+"
+     },
+     {
+        name: "OpenAIRE",
+        topics: "academic papers, research, journals, multi-disciplinary",
+        template: "https://explore.openaire.eu/search/find?fv0={query}&f0=q",
+        name_and_topics: "OpenAIRE: academic papers, research, journals, multi-disciplinary",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "ScienceDirect",
+        topics: "academic papers, research, journals, science, multi-disciplinary",
+        template: "https://www.sciencedirect.com/search?qs={query}&accessTypes=openaccess&lastSelectedFacet=accessTypes",
+        name_and_topics: "ScienceDirect: academic papers, research, journals, science, multi-disciplinary",
+        spaceReplacement: "+"
+     },
+     {
+        name: "Wiley Online Library",
+        topics: "academic papers, research, journals, science, health",
+        template: "https://onlinelibrary.wiley.com/action/doSearch?AllField={query}",
+        name_and_topics: "Wiley Online Library: academic papers, research, journals, science, health",
+        spaceReplacement: "+"
+     },
+     {
+        name: "Taylor & Francis Online",
+        topics: "academic papers, research, journals, multi-disciplinary",
+        template: "https://www.tandfonline.com/action/doSearch?AllField={query}&startPage=&pageSize=10&openAccess=18",
+        name_and_topics: "Taylor & Francis Online: academic papers, research, journals, multi-disciplinary",
+        spaceReplacement: "+"
+     },
+     {
+        name: "SpringerLink",
+        topics: "academic papers, research, journals, multi-disciplinary",
+        template: "https://link.springer.com/search?query={query}&openAccess=true",
+        name_and_topics: "SpringerLink: academic papers, research, journals, multi-disciplinary",
+        spaceReplacement: "+"
+     },
+     {
+        name: "EarthArXiv",
+        topics: "academic papers, research, journals, earth sciences, geosciences",
+        template: "https://eartharxiv.org/repository/search/{query}/",
+        name_and_topics: "EarthArXiv: academic papers, research, journals, earth sciences, geosciences",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "AgriXiv",
+        topics: "academic papers, research, journals, agriculture, life sciences",
+        template: "https://www.cabidigitallibrary.org/action/doSearch?AllField={query}&SeriesKey=agrirxiv",
+        name_and_topics: "AgriXiv: academic papers, research, journals, agriculture, life sciences",
+        spaceReplacement: "+"
+     },
+     {
+        name: "ERIC",
+        topics: "academic papers, research, journals, education",
+        template: "https://eric.ed.gov/?q={query}",
+        name_and_topics: "ERIC: academic papers, research, journals, education",
+        spaceReplacement: "+"
+     },
+     {
+        name: "African Journals Online",
+        topics: "academic papers, research, journals, Africa, multi-disciplinary",
+        template: "https://www.ajol.info/index.php/ajol/search/search?query={query}",
+        name_and_topics: "African Journals Online: academic papers, research, journals, Africa, multi-disciplinary",
+        spaceReplacement: "+"
+     },
+     {
+        name: "SciELO",
+        topics: "academic papers, research, journals, Latin America, Spanish, Portuguese, multi-disciplinary",
+        template: "https://search.scielo.org/?q=&lang=en&count=15&from=0&output=site&sort=&format=summary&fb=&page=1&q={query}&lang=en&page=1",
+        name_and_topics: "SciELO: academic papers, research, journals, Latin America, Spanish, Portuguese, multi-disciplinary",
+        spaceReplacement: "+"
+     },
 ];
