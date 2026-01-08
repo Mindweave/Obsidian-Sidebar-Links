@@ -1,6 +1,7 @@
 import { App, PluginSettingTab, Setting, Notice } from "obsidian";
 import { SelectionSidebarPlugin } from "./main";
 import { LinkTemplate } from "./types";
+import { filterLinks } from "./functions";
 
 export class SelectionSidebarSettingsTab extends PluginSettingTab {
     plugin: SelectionSidebarPlugin;
@@ -10,7 +11,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         this.plugin = plugin;
     }
 
-    display(defaultSettingText: LinkTemplate = {
+    display(searchText = "", defaultSettingText: LinkTemplate = {
                         name: "",
                         topics: "",
                         template: "",
@@ -24,7 +25,11 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         containerEl.createEl("h3", { text: "Add New Link" });
         containerEl.createEl("p", { text: "Fill in the fields below to create a new link. Use {query} in the URL template." });
         
+        // Input fields for new link
         let inputName: HTMLInputElement, inputTemplate: HTMLInputElement, inputTopics: HTMLInputElement, inputSpace: HTMLInputElement;
+        
+        // Input field for filtering existing links
+        let inputFilterText: HTMLInputElement;
 
         const addSettingDispayName = new Setting(containerEl).addTextArea(text => {
                 inputName = text.inputEl;
@@ -71,7 +76,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
 
                     this.plugin.settings.userLinks.push(newLink);
                     await this.plugin.saveSettings();
-                    this.display();
+                    this.display(inputFilterText.value);
 
                     inputName.value = "";                    
                     inputTopics.value = "";
@@ -80,17 +85,37 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                 })
             );
 
-        containerEl.createEl("h2", { text: "Current Links" });
+        // Current links section
+        // Source links
         const allLinks = this.plugin.settings.userLinks;
+        const filteredLinks = filterLinks(allLinks, searchText);
+        containerEl.createEl("h2", { text: "Current Links (" + filteredLinks.length + ")" });
+
+        //Input text for filtering existing links
+        const filterInput = new Setting(containerEl).addText(text => {
+            inputFilterText = text.inputEl;
+            text.setPlaceholder("Filter links...");
+            text.setValue(searchText);
+            text.inputEl.title = "Filter existing links by name and topics";
+        }).addButton(btn =>
+            btn.setButtonText("Search").onClick(() => {
+                this.display(inputFilterText.value);
+            })
+        );
+
+        // Display message if no links
         if (allLinks.length === 0) {
             containerEl.createEl("p", { text: "No links added yet." });
             return;
-        } else {
-        allLinks.forEach((link, index) => {
+        } else if (filteredLinks.length === 0) {
+            containerEl.createEl("p", { text: "No links match the filter." });
+     } else {
+        // List existing links with remove & edit buttons
+        filterLinks(allLinks, inputFilterText.value).forEach((link, index) => {
             const setting = new Setting(containerEl)
                 .setName(link.name_and_topics || link.name)
                 .setDesc(link.template);
-            //TODO add edit functionality later. This should be a button that removes the link and passes the link properties to the edit form
+            //TODO review removal functionality after links are filtered
             setting.addButton(btn =>
                 btn.setButtonText("Remove & Edit").onClick(async () => {
                     //Remove link
@@ -103,7 +128,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                     defaultSettingText.name_and_topics = link.name_and_topics;
                     defaultSettingText.spaceReplacement = link.spaceReplacement;
                     //Refresh display
-                    this.display(defaultSettingText);
+                    this.display(searchText, defaultSettingText);
                 })
             );
         });

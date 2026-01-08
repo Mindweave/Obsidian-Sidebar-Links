@@ -14,6 +14,7 @@ import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView } from "obsidian";
 import { SelectionSidebarSettings, LinkTemplate } from "./types";
 import { SelectionSidebarSettingsTab } from "./settings";
 import { DEFAULT_LINKS } from "./default-links";
+import { filterLinks } from "./functions";
 
 export const VIEW_TYPE_SELECTION = "selection-sidebar-view";
 
@@ -137,16 +138,9 @@ class SelectionView extends ItemView {
 
         const allLinks = this.plugin.settings.userLinks;
 
+        //TODO convert this an exported function in another file for reuse in settings.ts
         // Filter links using name_and_topics
-        const filtered = allLinks.filter(link =>
-            !filter || link.name_and_topics.toLowerCase().includes(filter.toLowerCase())
-        );
-
-        // Sort by earliest match index
-        filtered.sort((a, b) =>
-            a.name_and_topics.toLowerCase().indexOf(filter.toLowerCase()) -
-            b.name_and_topics.toLowerCase().indexOf(filter.toLowerCase())
-        );
+        const filtered = filterLinks(allLinks, filter);
 
         filtered.forEach(link => {
             const linkContainer = container.createDiv({ cls: "link-container" });
