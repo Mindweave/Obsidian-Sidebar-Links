@@ -176,5 +176,61 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
           template :"https://www.researchgate.net/search/publication?q={query}" ,
           name_and_topics :"ResearchGate : academic paper s,research,journals" ,
           spaceReplacement :"+"
+     },
+     {
+        name: "ArXiv",
+        topics: "academic papers, research, journals, physics, computer science",
+        template: "https://arxiv.org/search/?query={query}&searchtype=all&source=header",
+        name_and_topics: "ArXiv: academic papers, research, journals, physics, computer science",
+        spaceReplacement: "+"
+     },
+     {
+        name: "bioRxiv",
+        topics: "academic papers, research, journals, biology, life sciences",
+        template: "https://www.biorxiv.org/search/{query}",
+        name_and_topics: "bioRxiv: academic papers, research, journals, biology, life sciences",
+        spaceReplacement: "%252B"
+     },
+     {
+        name: "ChemRxiv",
+        topics: "academic papers, research, journals, chemistry",
+        template: "https://chemrxiv.org/engage/chemrxiv/search-dashboard?text={query}",
+        name_and_topics: "ChemRxiv: academic papers, research, journals, chemistry",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "medRxiv",
+        topics: "academic papers, research, journals, medicine, health sciences",
+        template: "https://www.medrxiv.org/search/{query}",
+        name_and_topics: "medRxiv: academic papers, research, journals, medicine, health sciences",
+        spaceReplacement: "%252B"
+     },
+     {
+        name: "SocArXiv",
+        topics: "academic papers, research, journals, social sciences",
+        template: "https://osf.io/preprints/socarxiv/discover?search={query}",
+        name_and_topics: "SocArXiv: academic papers, research, journals, social sciences",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "PsyArXiv",
+        topics: "academic papers, research, journals, psychology",
+        template: "https://osf.io/preprints/psyarxiv/discover?search={query}",
+        name_and_topics: "PsyArXiv: academic papers, research, journals, psychology",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "EconStor",
+        topics: "academic papers, research, journals, economics, business",
+        template: "www.econstor.eu/econbiz-search?query={query}",
+        name_and_topics: "EconStor: academic papers, research, journals, economics, business",
+        spaceReplacement: "+"
+     },
+     {
+        name: "SSRN",
+        topics: "academic papers, research, journals, social sciences, humanities",
+        template: "https://papers.ssrn.com/searchresults.cfm?term={query}",
+        name_and_topics: "SSRN: academic papers, research, journals, social sciences, humanities",
+        spaceReplacement: "+"
      }
 ];
