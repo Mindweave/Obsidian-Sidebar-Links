@@ -296,4 +296,46 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         name_and_topics: "SciELO: academic papers, research, journals, Latin America, Spanish, Portuguese, multi-disciplinary",
         spaceReplacement: "+"
      },
+     {
+        name: "LENS",
+        topics: "research, patents, R&D, innovation, intellectual property",
+        template: "https://www.lens.org/lens/search/patent/list?q={query}",
+        name_and_topics: "LENS: research, patents, R&D, innovation, intellectual property",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "NASA ADS",
+        topics: "academic papers, research, journals, astronomy, astrophysics, physics",
+        template: "https://ui.adsabs.harvard.edu/search/q={query}",
+        name_and_topics: "NASA ADS: academic papers, research, journals, astronomy, astrophysics, physics",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "Europe PMC",
+        topics: "academic papers, research, journals, life sciences, biology, medicine, biomedical",
+        template: "https://europepmc.org/search?query={query}",
+        name_and_topics: "Europe PMC: academic papers, research, journals, life sciences, biology, medicine, biomedical",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "WIPO",
+        topics: "research, patents, intellectual property, innovation",
+        template: "https://www.wipo.int/search/en/results?q={query}",
+        name_and_topics: "WIPO: research, patents, intellectual property, innovation",
+        spaceReplacement: "+"
+     },
+     {
+        name: "Espacenet",
+        topics: "research, patents, intellectual property, innovation, Europe",
+        template: "https://worldwide.espacenet.com/patent/search?q={query}",
+        name_and_topics: "Espacenet: research, patents, intellectual property, innovation, Europe",
+        spaceReplacement: "%20"
+     },
+     {
+        name: "Google Patents",
+        topics: "research, patents, intellectual property, innovation",
+        template: "https://patents.google.com/?oq={query}",
+        name_and_topics: "Google Patents: research, patents, intellectual property, innovation",
+        spaceReplacement: "+"
+     }
 ];
