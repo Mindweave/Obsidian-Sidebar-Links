@@ -337,5 +337,103 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         template: "https://patents.google.com/?oq={query}",
         name_and_topics: "Google Patents: research, patents, intellectual property, innovation",
         spaceReplacement: "+"
-     }
+     },
+    {
+      "name": "SearchMySite",
+      "topics": "website search, blogs, indie web, custom search engine",
+      "template": "https://searchmysite.net/search/?q={query}",
+      "name_and_topics": "SearchMySite: website search, blogs, indie web, custom search engine",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Digital Public Library of America",
+      "topics": "digital library, archives, primary sources, united states of america, multimedia, national library",
+      "template": "https://dp.la/search?q={query}",
+      "name_and_topics": "Digital Public Library of America: digital library, archives, primary sources, united states of america, multimedia, national library",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Europeana",
+      "topics": "digital library, archives, primary sources, europe, multimedia",
+      "template": "https://www.europeana.eu/en/search?page=1&view=grid&query={query}",
+      "name_and_topics": "Europeana: digital library, archives, primary sources, europe, multimedia",
+      "spaceReplacement": "%20"
+    },
+    {
+      "name": "HathiTrust Digital Library",
+      "topics": "digital library, books, archive, literature, general knowledge",
+      "template": "https://babel.hathitrust.org/cgi/ls?q1={query}&field1=ocr&a=srchls&ft=ft&lmt=ft",
+      "name_and_topics": "HathiTrust Digital Library: digital library, books, archive, literature, general knowledge",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "DigitalNZ",
+      "topics": "digital library, archives, primary sources, new zealand, multimedia, national library",
+      "template": "https://digitalnz.org/records?text={query}",
+      "name_and_topics": "DigitalNZ: digital library, archives, primary sources, new zealand, multimedia, national library",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Trove",
+      "topics": "digital library, archives, primary sources, australia, multimedia, national library",
+      "template": "https://trove.nla.gov.au/search?keyword={query}",
+      "name_and_topics": "Trove: digital library, archives, primary sources, australia, multimedia, national library",
+      "spaceReplacement": "%20"
+    },
+    {
+      "name": "Canadian Digital Library",
+      "topics": "digital library, archives, primary sources, canada, multimedia, national library",
+      "template": "https://recherche-collection-search.bac-lac.gc.ca/eng/Home/Result?q_1={query}&SEARCH_TYPE=SEARCH_BASIC&q_type_1=query",
+      "name_and_topics": "Canadian Digital Library: digital library, archives, primary sources, canada, multimedia, national library",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Austrian National Library Digital Collections",
+      "topics": "digital library, archives, primary sources, austria, multimedia, national library",
+      "template": "https://search.onb.ac.at/primo-explore/search?institution=43ACC_ONB&vid=ONB&tab=default_tab&search_scope=ONB_gesamtbestand&mode=basic&displayMode=full&bulkSize=10&highlight=true&dum=true&displayField=all&query=any,contains,{query}",
+      "name_and_topics": "Austrian National Library Digital Collections: digital library, archives, primary sources, austria, multimedia, national library",
+      "spaceReplacement": "%20"
+    },
+    {
+      "name": "National Library of Australia Digital Collections",
+      "topics": "digital library, archives, primary sources, australia, multimedia, national library",
+      "template": "https://catalogue.nla.gov.au/search?q={query}",
+      "name_and_topics": "National Library of Australia Digital Collections: digital library, archives, primary sources, australia, multimedia, national library",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "OOH Blog Directory",
+      "topics": "website search, blogs, indie web, custom search engine",
+      "template": "https://ooh.directory/search/?q={query}",
+      "name_and_topics": "OOH Blog Directory: website search, blogs, indie web, custom search engine",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Blogarama",
+      "topics": "website search, blogs, indie web, custom search engine",
+      "template": "https://www.blogarama.com/search-posts?search={query}",
+      "name_and_topics": "Blogarama: website search, blogs, indie web, custom search engine",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "MiniFeed",
+      "topics": "website search, blogs, indie web, custom search engine, RSS",
+      "template": "https://minifeed.net/search?q={query}",
+      "name_and_topics": "MiniFeed: website search, blogs, indie web, custom search engine, RSS",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Feedspot",
+      "topics": "website search, blogs, indie web, custom search engine, RSS",
+      "template": "https://www.feedspot.com/search?q={query}",
+      "name_and_topics": "Feedspot: website search, blogs, indie web, custom search engine, RSS",
+      "spaceReplacement": "+"
+    },
+    {
+      "name": "Wiby",
+      "topics": "website search, indie web, minimalist search engine, blogs",
+      "template": "https://wiby.me/?q={query}",
+      "name_and_topics": "Wiby: website search, indie web, minimalist search engine, blogs",
+      "spaceReplacement": "+"
+    }
 ];
