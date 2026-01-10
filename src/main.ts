@@ -10,7 +10,7 @@
  * - Prepopulates default links on first activation.
  */
 
-import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView } from "obsidian";
+import { App, Plugin, WorkspaceLeaf, Editor, Notice, ItemView, addIcon } from "obsidian";
 import { SelectionSidebarSettings, LinkTemplate } from "./types";
 import { SelectionSidebarSettingsTab } from "./settings";
 import { DEFAULT_LINKS } from "./default-links";
@@ -26,6 +26,14 @@ export default class SelectionSidebarPlugin extends Plugin {
 
     async onload() {
         await this.loadSettings();
+
+        //Create custom icon (not current used)
+        addIcon("customSidebarSVGIcon", `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+     fill="none" stroke="currentColor" stroke-width="1.75"
+     stroke-linecap="round" stroke-linejoin="round">
+  <path d="M4 3l7 17 2-6 6-2z"/>
+</svg>
+`);
 
         // Prepopulate defaults on first activation
         if (!this.settings.userLinks || this.settings.userLinks.length === 0) {
@@ -104,7 +112,7 @@ class SelectionView extends ItemView {
 
     getViewType(): string { return VIEW_TYPE_SELECTION; }
     getDisplayText(): string { return "Selection Links"; }
-    getIcon(): string { return "microsope"; }
+    getIcon(): string { return "mouse-pointer-click"; }
 
     async onOpen() {
         this.contentEl.empty();
@@ -151,7 +159,7 @@ class SelectionView extends ItemView {
             const a = linkContainer.createEl("a", {
                 text: link.name,
                 href: url,
-                attr: { target: "_blank", title: url }
+                attr: { target: "_blank", title: "Topics: " + link.topics + "\n" + "URL: " + url }
             });
 
             const copyBtn = linkContainer.createEl("button", { text: "📋", cls: "copy-link-btn", attr: { title: "Copy URL" } });
