@@ -1,0 +1,11 @@
+- Academic Papers (done)
+- Indie Web (done)
+- Electronic DIY (done)
+- Housework DIY (done)
+- Photography (done)
+- Digital Art
+- Museum Collections
+- Historical primary sources databases
+- Statistics databases
+- Trade databases
+- National statistics databases

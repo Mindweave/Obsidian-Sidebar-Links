@@ -421,5 +421,131 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "Arduino, Raspberry Pi, DIY, electronics, maker culture, IOT, project tutorials",
         template: "https://www.hackster.io/search?i=projects&q={query}",
         spaceReplacement: "%20"
+    },
+    {
+        name: "Family Handyman",
+        topics: "home improvement, DIY, crafts, tutorials",
+        template: "https://www.familyhandyman.com/?s={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "DoItYourself",
+        topics: "home improvement, DIY, crafts, tutorials",
+        template: "https://www.doityourself.com/search?dsp=how-to&psearch={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "DIY Joy",
+        topics: "DIY, crafts, home improvement, tutorials",
+        template: "https://diyjoy.com/?s={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "eHow",
+        topics: "how-to guides, tutorials, DIY, crafts, home improvement",
+        template: "https://www.ehow.com/search?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Spruce Crafts",
+        topics: "DIY, crafts, tutorials, maker culture, home decor, sewing, knitting",
+        template: "https://www.thesprucecrafts.com/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Craftsy",
+        topics: "DIY, crafts, tutorials, maker culture, sewing, knitting, quilting",
+        template: "https://www.craftsy.com/search?s={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Ana White",
+        topics: "DIY, woodworking, home improvement, tutorials",
+        template: "https://www.ana-white.com/search?search_api_fulltext={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Flickr",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.flickr.com/search/?text={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Unsplash",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://unsplash.com/s/photos/{query}",
+        spaceReplacement: "-"
+    },
+    {
+        name: "Pexels",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.pexels.com/search/{query}/",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Pixabay Photos",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://pixabay.com/photos/search/{query}/",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Burst by Shopify",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.shopify.com/stock-photos/photos/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "iStockPhoto",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.istockphoto.com/search/2/image-film?phrase={query}&mediatype=photography",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Glass.Photo",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://glass.photo/explore/photos/{query}",
+        spaceReplacement: "-"
+    },
+    {
+        name: "500px Photography",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://500px.com/search?q={query}&type=photos&sort=relevance",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Imgur",
+        topics: "photography, images, memes, visual media",
+        template: "https://imgur.com/search/score/all?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "1x Photography",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://1x.com/search/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Adobe Stock",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://stock.adobe.com/search/images?filters%5Bcontent_type%3Aphoto%5D=1&filters%5Bcontent_type%3Aillustration%5D=0&filters%5Bcontent_type%3Azip_vector%5D=0&filters%5Bcontent_type%3Avideo%5D=0&filters%5Bcontent_type%3Atemplate%5D=0&filters%5Bcontent_type%3A3d%5D=0&filters%5Bcontent_type%3Aaudio%5D=0&filters%5Binclude_stock_enterprise%5D=0&filters%5Bcontent_type%3Aimage%5D=1&filters%5Bgentech%5D=exclude&k={query}&order=relevance&price%5B%24%5D=1&limit=100&search_type=filter-select&search_page=1&get_facets=1",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Canva Photos",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.canva.com/photos/search/{query}/",
+        spaceReplacement: "-"
+    },
+    {
+        name: "Shutterstock",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.shutterstock.com/search/{query}?image_type=photo",
+        spaceReplacement: "-"
+    },
+    {
+        name: "Behance",
+        topics: "photography, images, creative commons, visual media, design portfolios",
+        template: "https://www.behance.net/search/projects/{query}",
+        spaceReplacement: "%20"
     }
 ];
