@@ -273,6 +273,12 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         spaceReplacement: "+"
      },
      {
+        name: "IOPScience",
+        topics: "academic papers, research, journals, physics, astronomy, materials science",
+        template: "https://iopscience.iop.org/nsearch?terms={query}",
+        spaceReplacement: "+"
+     },
+     {
         name: "Europe PMC",
         topics: "academic papers, research, journals, life sciences, biology, medicine, biomedical",
         template: "https://europepmc.org/search?query={query}",
@@ -379,5 +385,41 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
       "topics": "website search, indie web, minimalist search engine, blogs",
       "template": "https://wiby.me/?q={query}",
       "spaceReplacement": "+"
+    },
+    {
+        "name": "Instructables",
+        "topics": "DIY, crafts, tutorials, maker culture",
+        "template": "https://www.instructables.com/search?q={query}",
+        "spaceReplacement": "+"
+    },
+    {
+        "name": "AllRecipes",
+        "topics": "cooking, recipes, food",
+        "template": "https://www.allrecipes.com/search?q={query}",
+        "spaceReplacement": "+"
+    },
+    {
+        "name": "WikiHow",
+        "topics": "how-to guides, tutorials, DIY, crafts",
+        "template": "https://www.wikihow.com/wikiHowTo?search=heal+bruise&Search=",
+        "spaceReplacement": "+"
+    },
+    {
+        "name": "Arduino Project Hub",
+        "topics": "Arduino, electronics, DIY, maker culture, IOT, project tutorials",
+        "template": "https://projecthub.arduino.cc/?value={query}",
+        "spaceReplacement": "+"
+    },
+    {
+        "name": "PiMyLifeUp",
+        "topics": "Raspberry Pi, DIY, electronics, maker culture, IOT, project tutorials",
+        "template": "https://pimylifeup.com/?s={query}",
+        "spaceReplacement": "+"
+    },
+    {
+        name: "Hackster.io",
+        topics: "Arduino, Raspberry Pi, DIY, electronics, maker culture, IOT, project tutorials",
+        template: "https://www.hackster.io/search?i=projects&q={query}",
+        spaceReplacement: "%20"
     }
 ];

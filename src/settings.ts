@@ -15,7 +15,6 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                         name: "",
                         topics: "",
                         template: "",
-                        name_and_topics: "",
                         spaceReplacement: ""
                     }): void {
         const { containerEl } = this;
@@ -65,7 +64,6 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                         name: inputName.value.trim(),
                         topics: inputTopics.value.trim(),
                         template: inputTemplate.value.trim(),
-                        name_and_topics: inputName.value.trim() + ": " + inputTopics.value.trim(),
                         spaceReplacement: inputSpace.value.trim() || "_"
                     };
 
@@ -76,7 +74,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
 
                     this.plugin.settings.userLinks.push(newLink);
                     await this.plugin.saveSettings();
-                    this.display(inputFilterText.value);
+                    this.display(inputFilterText.value); // Refresh display with current filter and remove edit defaults
 
                     inputName.value = "";                    
                     inputTopics.value = "";
@@ -99,7 +97,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
             text.inputEl.title = "Filter existing links by name and topics";
         }).addButton(btn =>
             btn.setButtonText("Search").onClick(() => {
-                this.display(inputFilterText.value);
+                this.display(inputFilterText.value, defaultSettingText);
             })
         );
 
@@ -113,7 +111,7 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
         // List existing links with remove & edit buttons
         filterLinks(allLinks, inputFilterText.value).forEach((link, index) => {
             const setting = new Setting(containerEl)
-                .setName(link.name_and_topics || link.name)
+                .setName(link.name+": "+link.topics)
                 .setDesc(link.template);
             //TODO review removal functionality after links are filtered
             setting.addButton(btn =>
@@ -125,7 +123,6 @@ export class SelectionSidebarSettingsTab extends PluginSettingTab {
                     defaultSettingText.name = link.name;
                     defaultSettingText.topics = link.topics;
                     defaultSettingText.template = link.template;
-                    defaultSettingText.name_and_topics = link.name_and_topics;
                     defaultSettingText.spaceReplacement = link.spaceReplacement;
                     //Refresh display
                     this.display(searchText, defaultSettingText);
