@@ -5,10 +5,16 @@
 - Photography (done)
 - Digital Art (done)
 - Fine Art for sale (done)
-- Historical Fine art
-- Museum Collections
+- Historical Fine art (done)
+- Museum Collections (done)
 - Creative Coding
 - Coding projects
+- Fine Poetry
+- Amateur Poetry
+- Quotes
+- Dictionary
+- Thesuarus
+- Etymology
 - Historical primary sources databases
 - Statistics databases
 - Trade databases
