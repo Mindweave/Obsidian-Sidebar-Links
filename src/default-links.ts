@@ -547,5 +547,102 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "photography, images, creative commons, visual media, design portfolios",
         template: "https://www.behance.net/search/projects/{query}",
         spaceReplacement: "%20"
+    },
+    {
+        name: "Art.com Photography",
+        topics: "photography, images, creative commons, visual media",
+        template: "https://www.art.com/gallery?txtSearch={query}&categoryId=c23946",
+        spaceReplacement: "+"
+    },
+    {
+        name: "FreePik",
+        topics: "drawing, creative commons, visual media, digital art, vectors, 2D, illustrations",
+        template: "https://www.freepik.com/search?ai=excluded&format=search&last_filter=type&last_value=illustration&query={query}&sort=relevance&type=illustration",
+        spaceReplacement: "+"
+    },
+    {
+        name: "ArtStation",
+        topics: "drawing, creative commons, visual media, digital art, 2D, concept art, illustrations",
+        template: "https://www.artstation.com/search?sort_by=relevance&query={query}&tags_exclude=CreatedWithAI&software_ids_exclude=193982,187754,205467&medium_ids_include=1",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Pixiv",
+        topics: "drawing, anime, visual media, digital art, 2D, concept art, illustrations",
+        template: "https://www.pixiv.net/tags/{query}/artworks?s_mode=s_tag",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Saatchi Art",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art",
+        template: "https://www.saatchiart.com/all?query={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Art Finder",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art",
+        template: "https://www.artfinder.com/art/q-{query}/",
+        spaceReplacement: "-"
+    },
+    {
+        name: "UGallery",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.ugallery.com/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Artsy",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art",
+        template: "https://www.artsy.net/search?term={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Rise Art",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.riseart.com/art?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Art Gallery UK",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.artgallery.co.uk/listing/search?query={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "ArtSpan",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.artspan.com/browse-all-art?keywords={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Art Brokerage",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.artbrokerage.com/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Fizdi Art",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.fizdi.com/search.php?search_query={query}&section=product",
+        spaceReplacement: "+"
+    },
+    {
+        name: "OliverGal Artist Co.",
+        topics: "art for sale, painting, visual media, mixed media, fine art",
+        template: "https://olivergal.com/search?q={query}&options%5Bprefix%5D=last&type=product",
+        spaceReplacement: "+"
+    },
+    {
+        name: "ArtSper",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.artsper.com/us/contemporary-artworks?query={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Singulart",
+        topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
+        template: "https://www.singulart.com/en/search?q={query}",
+        spaceReplacement: "%20"
     }
+
 ];

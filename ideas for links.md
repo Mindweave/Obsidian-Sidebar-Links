@@ -3,8 +3,12 @@
 - Electronic DIY (done)
 - Housework DIY (done)
 - Photography (done)
-- Digital Art
+- Digital Art (done)
+- Fine Art for sale (done)
+- Historical Fine art
 - Museum Collections
+- Creative Coding
+- Coding projects
 - Historical primary sources databases
 - Statistics databases
 - Trade databases
