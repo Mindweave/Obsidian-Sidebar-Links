@@ -316,7 +316,7 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
     },
     {
       "name": "Europeana",
-      "topics": "digital library, archives, primary sources, europe, multimedia",
+      "topics": "digital library, portraits, art, archives, history, historical primary sources, europe, multimedia",
       "template": "https://www.europeana.eu/en/search?page=1&view=grid&query={query}",
       "spaceReplacement": "%20"
     },
@@ -643,6 +643,151 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "art for sale, drawing, painting, visual media, mixed media, fine art",
         template: "https://www.singulart.com/en/search?q={query}",
         spaceReplacement: "%20"
+    },
+    {
+        name: "Shorpy Historical Photo Archive",
+        topics: "historical photos, vintage photography, archives, visual media, history",
+        template: "https://www.shorpy.com/search/node/{query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Facsimile Finder",
+        topics: "historical photos, illuminated texts, medieval, history, historical books, vintage photography, archives, visual media, history",
+        template: "https://www.facsimilefinder.com/search/term/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "National Gallery of Canada",
+        topics: "art archive, portrait, history, historical photos, visual media, history, canada, national library",
+        template: "https://www.gallery.ca/collection/search-the-collection?search_api_views_fulltext={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "New York Public Library Digital Collections",
+        topics: "digital library, archives, history, historical photos, primary sources, multimedia",
+        template: "https://digitalcollections.nypl.org/search/index?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Library of Congress Digital Collections",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library",
+        template: "https://www.loc.gov/search/?in=&q={query}&new=true",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Smithsonian Institution Collections",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library, museums",
+        template: "https://collections.si.edu/search/results.htm?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "British Museum Collection",
+        topics: "digital library, archives, history, historical photos, primary sources, united kingdom, multimedia, national library, museums",
+        template: "https://www.britishmuseum.org/collection/search?keyword={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "National Gallery of Art",
+        topics: "art archive, portrait, history, historical photos, visual media, history, united states of america, national library, museums",
+        template: "https://www.nga.gov/search?keywords={query}&type[]=artwork",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Metropolitan Museum of Art Collection",
+        topics: "art archive, portrait, history, historical photos, visual media, history, united states of america, national library, museums",
+        template: "https://www.metmuseum.org/art/collection/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Museum of Modern Art (MoMA) Collection",
+        topics: "art archive, portrait, history, historical photos, visual media, history, united states of america, national library, museums",
+        template: "https://www.moma.org/collection/?classifications=any&include_uncataloged_works=false&on_view=false&q={query}&with_images=true",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Victoria and Albert Museum Collection",
+        topics: "art archive, portrait, history, historical photos, visual media, history, united kingdom, national library, museums",
+        template: "https://collections.vam.ac.uk/search/?page=1&page_size=50&q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Google Arts & Culture",
+        topics: "art archive, portrait, history, historical photos, visual media, history, global, museums",
+        template: "https://artsandculture.google.com/search/asset?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Artnet",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art, auctions",
+        template: "https://www.artnet.com/search/artworks/?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "MutualArt",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art, auctions",
+        template: "https://www.mutualart.com/LotsResults/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Invaluable",
+        topics: "art for sale, drawing, painting, visual media, mixed media, sculptures, fine art, auctions",
+        template: "https://www.invaluable.com/search?query={query}&keyword={query}",
+        spaceReplacement: "%2520"
+    },
+    {
+        name: "Louvre Museum Collection",
+        topics: "art archive, portrait, history, historical photos, visual media, history, france, national library, museums",
+        template: "https://collections.louvre.fr/en/recherche?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Digital Library of Appalachia",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, tennessee, national library",
+        template: "https://dla.contentdm.oclc.org/digital/search/searchterm/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Calisphere",
+        topics: "digital library, archives, history, historical photos, primary sources, california, united states of america, multimedia, national library",
+        template: "https://calisphere.org/search/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Wikimedia Commons",
+        topics: "photography, images, creative commons, visual media, digital library, archives, history, historical photos, primary sources, global, multimedia, national library",
+        template: "https://commons.wikimedia.org/w/index.php?search={query}&title=Special%3ASearch",
+        spaceReplacement: "+"
+    },
+    {
+        name: "U.S. GSA Fine Arts Collection",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library",
+        template: "https://art.gsa.gov/search/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Digital Bodleian",
+        topics: "digital library, medieval, archives, history, historical photos, primary sources, united kingdom, multimedia, national library, manuscripts",
+        template: "https://digital.bodleian.ox.ac.uk/search/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "New York Historical Society Digital Collections",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library, museums",
+        template: "https://digitalcollections.nyhistory.org/browse?search_api_fulltext={query}&sort_bef_combine=title_ASC",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Digital Library of the Caribbean",
+        topics: "digital library, archives, history, historical photos, primary sources, caribbean, multimedia, national library",
+        template: "https://dloc.com/results?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Archives of American Art",
+        topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library, art",
+        template: "https://www.aaa.si.edu/search/collections?edan_fq%5B0%5D=&stype=search-collections&edan_q={query}&edan_fq[]=p.edanmdm.descriptivenonrepeating.record_id:AAADCD_item_*",
+        spaceReplacement: "%20"
     }
+
 
 ];
