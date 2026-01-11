@@ -787,7 +787,108 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "digital library, archives, history, historical photos, primary sources, united states of america, multimedia, national library, art",
         template: "https://www.aaa.si.edu/search/collections?edan_fq%5B0%5D=&stype=search-collections&edan_q={query}&edan_fq[]=p.edanmdm.descriptivenonrepeating.record_id:AAADCD_item_*",
         spaceReplacement: "%20"
+    },
+    {
+        name: "OpenPoetry",
+        topics: "poetry, poems, modern poetry, amateur poetry",
+        template: "https://openpoet.org/search?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "PoemHunter",
+        topics: "poetry, poems, classic poetry, modern poetry",
+        template: "https://www.poemhunter.com/search/?w=poem&q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Poetry Foundation",
+        topics: "poetry, poems, classic poetry, modern poetry",
+        template: "https://www.poetryfoundation.org/search?query={query}&refinementList%5Btype%5D%5B0%5D=poems",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "AllPoetry",
+        topics: "poetry, poems, modern poetry, amateur poetry",
+        template: "https://allpoetry.com/search?term={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Poems.com",
+        topics: "poetry, poems, classic poetry, modern poetry",
+        template: "https://poems.com/search/?_search={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Pre-1920 American Verse Project",
+        topics: "poetry, poems, classic poetry, american poetry, historical poetry",
+        template: "https://quod.lib.umich.edu/cgi/t/text/text-idx?rgn=full+text&q1={query}&c=amverse&cc=amverse&type=simple",
+        spaceReplacement: "+"
+    },
+    {
+        name: "MetaCrawler",
+        topics: "metasearch engine, search browser, web search, multiple search engines",
+        template: "https://www.metacrawler.com/serp?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Info.com",
+        topics: "metasearch engine, search browser, web search, multiple search engines",
+        template: "https://www.info.com/serp?q={query}&segment=info.infous.udog2",
+        spaceReplacement: "+"
+    },
+    {
+        name: "ZapMeta",
+        topics: "metasearch engine, search browser, web search, multiple search engines",
+        template: "https://www.zapmeta.com/search?q={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Qwant",
+        topics: "metasearch engine, search browser, web search, multiple search engines, privacy",
+        template: "https://www.qwant.com/?q={query}&t=web",
+        spaceReplacement: "+"
+    },
+    {
+        name: "MapQuest",
+        topics: "maps, directions, navigation, travel, locations search",
+        template: "https://www.mapquest.com/search/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Representative Poetry Online",
+        topics: "poetry, poems, classic poetry, modern poetry, academic",
+        template: "https://rpo.library.utoronto.ca/poems-advanced-search?combine=&combine_1={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Sacred Persian Verse",
+        topics: "poetry, poems, classic poetry, middle east, persian poetry, historical poetry",
+        template: "https://www.sacredpersianverse.com/_/search?query={query}&scope=site&showCloudSearchTab=false",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Poetry.com",
+        topics: "poetry, poems, modern poetry, amateur poetry",
+        template: "https://www.poetry.com/psearch/{query}/2",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Abbreviations.com",
+        topics: "abbreviations, acronyms, initialisms, definitions, glossary, dictionary",
+        template: "https://www.abbreviations.com/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Acronym Finder",
+        topics: "abbreviations, acronyms, initialisms, definitions, glossary, dictionary",
+        template: "https://www.acronymfinder.com/~/search/af.aspx?string=exact&Acronym={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Biographies.net",
+        topics: "biographies, people, historical figures, personal history",
+        template: "https://www.biographies.net/search/{query}",
+        spaceReplacement: "%20"
     }
-
 
 ];
