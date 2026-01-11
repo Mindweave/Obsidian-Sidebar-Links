@@ -7,14 +7,16 @@
 - Fine Art for sale (done)
 - Historical Fine art (done)
 - Museum Collections (done)
+- Fine Poetry (done)
+- Amateur Poetry (done)
+- Biographies (done)
+- Idioms and Phrases (done)
+- Dictionary (done)
+- Thesuarus (done)
+- Etymology
 - Creative Coding
 - Coding projects
-- Fine Poetry
-- Amateur Poetry
 - Quotes
-- Dictionary
-- Thesuarus
-- Etymology
 - Historical primary sources databases
 - Statistics databases
 - Trade databases

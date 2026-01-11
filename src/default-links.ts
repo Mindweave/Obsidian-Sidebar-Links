@@ -925,6 +925,102 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "phrases, idioms, sayings, expressions, definitions",
         template: "https://www.phrases.com/psearch/{query}",
         spaceReplacement: "+"
+    },
+    {
+        name: "The Idioms",
+        topics: "phrases, idioms, sayings, expressions, definitions",
+        template: "https://www.theidioms.com/search/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "UsingEnglish",
+        topics: "phrases, idioms, sayings, expressions, definitions, dictionary",
+        template: "https://www.usingenglish.com/search/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Urban Dictionary",
+        topics: "phrases, idioms, slang, sayings, expressions, definitions, meaning",
+        template: "https://www.urbandictionary.com/define.php?term={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "English Collocations",
+        topics: "phrases, idioms, sayings, expressions, definitions, collocations",
+        template: "https://linguatools.de/kollokationen-en/bolls/?utf8=%E2%9C%93&lemmahits=100&query={query}&commit=Search+Collocations%21",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Hyper Collocations",
+        topics: "phrases, idioms, sayings, expressions, definitions, collocations",
+        template: "https://hypcol.marutank.net/?q={query}&d=f",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Skell Concordance",
+        topics: "phrases, idioms, sayings, expressions, definitions, collocations",
+        template: "https://skell.sketchengine.eu/#result?f=concordance&lang=en&query={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Merriam-Webster Dictionary",
+        topics: "dictionary, definitions, meaning, language",
+        template: "https://www.merriam-webster.com/dictionary/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Oxford English Dictionary",
+        topics: "dictionary, definitions, meaning, language",
+        template: "https://www.oed.com/search/dictionary/?scope=Entries&q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Collins Dictionary",
+        topics: "dictionary, definitions, meaning, language",
+        template: "https://www.collinsdictionary.com/us/spellcheck/english?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Longman Dictionary",
+        topics: "dictionary, definitions, meaning, language",
+        template: "https://www.ldoceonline.com/spellcheck/english/?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Reverse Dictionary",
+        topics: "thesaurus, similar words, language",
+        template: "https://reversedictionary.org/wordsfor/{query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "OneLook Thesaurus",
+        topics: "thesaurus, similar words, language",
+        template: "https://www.onelook.com/thesaurus/?s={query}",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Reverse Dictionary Virock",
+        topics: "thesaurus, similar words, language",
+        template: "https://reverse-dictionary.virock.org/{query}?private=false&page=1",
+        spaceReplacement: "%20"
+    },
+    {
+        name: "Power Thesaurus",
+        topics: "thesaurus, similar words, language",
+        template: "https://www.powerthesaurus.org/{query}/synonyms",
+        spaceReplacement: "_"
+    },
+    {
+        name: "Visualizing Stanford Encylopedia of Philosophy",
+        topics: "philosophy, graph, visualization, reference",
+        template: "https://www.visualizingsep.com/#/entries/{query}/",
+        spaceReplacement: "-"
+    },
+    {
+        name: "ReverseDict",
+        topics: "thesaurus, similar words, language",
+        template: "https://reversedict.org/search?text={query}&lang=en",
+        spaceReplacement: "+"
     }
 
 ];
