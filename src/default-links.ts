@@ -4,7 +4,7 @@ import { LinkTemplate } from "types";
 export const DEFAULT_LINKS: LinkTemplate[] = [
     {
         name: "Wikipedia",
-        topics: "encyclopedia, reference",
+        topics: "encyclopedia, reference, biography, general knowledge",
         template: "https://en.wikipedia.org/wiki/{query}",
         spaceReplacement: "_"
     },
@@ -889,6 +889,42 @@ export const DEFAULT_LINKS: LinkTemplate[] = [
         topics: "biographies, people, historical figures, personal history",
         template: "https://www.biographies.net/search/{query}",
         spaceReplacement: "%20"
+    },
+    {
+        name: "Biography.com",
+        topics: "biographies, people, historical figures, personal history",
+        template: "https://www.biography.com/search?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Biography Online",
+        topics: "biographies, people, historical figures, personal history",
+        template: "https://cse.google.com/cse?cx=partner-pub-9224516673945257:1472291286&ie=UTF-8&q={query}&sa=Search&ref=duckduckgo.com/",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Britannica Biographies",
+        topics: "biographies, people, historical figures, personal history",
+        template: "https://www.britannica.com/search?query={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Ducksters Biographies",
+        topics: "kid-friendly, biographies, people, historical figures, personal history, kids, education",
+        template: "https://www.ducksters.com/searchducksters.php?q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Notable Biographies",
+        topics: "biographies, people, historical figures, personal history",
+        template: "https://www.jrank.org/api/search/v2/?key=990877f3a848dec835582de11765ffb58d743dc7&q={query}",
+        spaceReplacement: "+"
+    },
+    {
+        name: "Phrases.com",
+        topics: "phrases, idioms, sayings, expressions, definitions",
+        template: "https://www.phrases.com/psearch/{query}",
+        spaceReplacement: "+"
     }
 
 ];
